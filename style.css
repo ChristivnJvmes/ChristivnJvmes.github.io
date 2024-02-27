@@ -87,6 +87,12 @@ section h2 {
 .project {
     margin: 20px; /* Adds some space around your projects */
     width: calc(50% - 40px); /* Adjust the width as necessary, accounting for margin */
+    padding: 20px;
+    background: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-sizing: border-box;
 }
 
 .project h3 {
@@ -103,6 +109,8 @@ section h2 {
     max-width: 640px; /* You can adjust this to your preferred max width */
     border: none; /* Removes the border */
     box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Optional: Adds some shadow for depth */
+    border-radius: 8px;
+    box-sizing: border-box;
 }
 
 
