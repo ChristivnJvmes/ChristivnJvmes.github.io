@@ -77,21 +77,16 @@ section h2 {
 /* Project styles */
 .project-container {
     display: flex;
+    justify-content: center;
+    align-items: center;
     flex-wrap: wrap;
-    gap: 20px;
+    margin: 0 auto;
+    max-width: 1200px; /* Adjust this to fit your desired width */
 }
 
 .project {
-    overflow: hidden;
-    flex: 1 1 300px; /* Allows flex items to grow and shrink but not be smaller than 300px */
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    margin: 0;
-    padding: 0;
-    background: #ffffff;
-    border-radius: 10px;
-    transition: transform 0.3s ease-in-out;
-    display: flex;
-    flex-direction: column; /* Stack children vertically */
+    margin: 20px; /* Adds some space around your projects */
+    width: calc(50% - 40px); /* Adjust the width as necessary, accounting for margin */
 }
 
 .project h3 {
@@ -105,7 +100,9 @@ section h2 {
 
 .project iframe {
     width: 100%;
-    border: none; /* Removes default border around iframe */
+    max-width: 640px; /* You can adjust this to your preferred max width */
+    border: none; /* Removes the border */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Optional: Adds some shadow for depth */
 }
 
 
@@ -119,12 +116,12 @@ footer {
 }
 
 /* Responsive design */
-@media (min-width: 600px) {
-    .project iframe {
-        width: 90%;
-        margin: auto;
+@media (max-width: 768px) {
+    .project {
+        width: 100%; /* Full width on smaller screens */
     }
 }
+
     .project {
         width: 100%; /* Full width on smaller screens */
         margin: 20px 0; /* Only vertical margin */
