@@ -85,11 +85,12 @@ section h2 {
 }
 
 .project {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  padding: 20px;
-  background-color: #f9f9f9;
-  transition: box-shadow 0.3s ease-in-out; /* for a smooth transition on hover */
+    background-color: #000; /* Set the background to black */
+    color: #fff; /* Set the text color to white */
+    padding: 20px;
+    margin-bottom: 30px;
+    border-radius: 5px;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.2); /* Optional: adds a shadow to the box */
 }
 
 .project h3 {
@@ -99,6 +100,14 @@ section h2 {
 
 .project p {
     flex-grow: 1; /* Allows the paragraph to fill the space */
+}
+
+.project a {
+    color: #fff; /* Set the link color to white */
+}
+
+.project a:hover {
+    color: #ddd; /* Optional: Lighten the link color on hover */
 }
 
 .project:hover {
