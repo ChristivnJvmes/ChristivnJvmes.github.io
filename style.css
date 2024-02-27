@@ -82,6 +82,7 @@ section h2 {
 }
 
 .project {
+    overflow: hidden;
     flex: 1 1 300px; /* Allows flex items to grow and shrink but not be smaller than 300px */
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     margin: 20px;
@@ -102,12 +103,13 @@ section h2 {
     flex-grow: 1; /* Allows the paragraph to fill the space */
 }
 
-.project video {
+.project iframe {
     width: 100%;
-    height: auto;
-    border-radius: 8px;
-    margin-bottom: 15px;
+    max-width: 640px; /* Adjust as necessary */
+    max-height: 360px; /* Adjust as necessary */
+    border: none; /* Removes default border around iframe */
 }
+
 
 /* Footer styles */
 footer {
