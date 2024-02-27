@@ -36,12 +36,6 @@ header p {
     margin-top: 5px;
 }
 
-.container {
-  max-width: 600px; /* optimal reading width */
-  margin: 0 auto; /* centers the container */
-  padding: 0 15px; /* padding on the sides */
-}
-
 /* Navigation styles */
 nav ul {
     background-color: #023E73;
