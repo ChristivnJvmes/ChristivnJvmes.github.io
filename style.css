@@ -7,11 +7,12 @@
 
 /* General body styles */
 body {
-    font-family: 'Open Sans', sans-serif;
-  font-size: 16px;
-  line-height: 1.6;
-  color: #333333; /* dark gray for better readability than pure black */
-  background: #FFFFFF; /* white background */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    padding: 20px;
+    background-color: #f4f4f4;
+    color: #333;
+    overflow-x: hidden;
 }
 
 p {
