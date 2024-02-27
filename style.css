@@ -7,12 +7,15 @@
 
 /* General body styles */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    line-height: 1.6;
-    padding: 20px;
-    background-color: #f4f4f4;
-    color: #333;
-    overflow-x: hidden;
+    font-family: 'Open Sans', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #333333; /* dark gray for better readability than pure black */
+  background: #FFFFFF; /* white background */
+}
+
+p {
+  margin-bottom: 1em; /* adds space after paragraphs */
 }
 
 /* Header styles */
@@ -31,6 +34,12 @@ header h1 {
 header p {
     font-size: 1.2rem;
     margin-top: 5px;
+}
+
+.container {
+  max-width: 600px; /* optimal reading width */
+  margin: 0 auto; /* centers the container */
+  padding: 0 15px; /* padding on the sides */
 }
 
 /* Navigation styles */
