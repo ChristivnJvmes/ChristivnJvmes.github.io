@@ -85,14 +85,11 @@ section h2 {
 }
 
 .project {
-    margin: 20px; /* Adds some space around your projects */
-    width: calc(50% - 40px); /* Adjust the width as necessary, accounting for margin */
-    padding: 20px;
-    background: #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    margin-bottom: 20px;
-    box-sizing: border-box;
+  border-radius: 10px; /* Adds rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow */
+  overflow: hidden; /* Ensures the content fits within the corners */
+  background: #ffffff; /* White background */
+  transition: transform 0.3s ease-in-out; /* Smooth transition for hover effect */
 }
 
 .project h3 {
@@ -104,13 +101,14 @@ section h2 {
     flex-grow: 1; /* Allows the paragraph to fill the space */
 }
 
-.project iframe {
-    width: 100%;
-    max-width: 640px; /* You can adjust this to your preferred max width */
-    border: none; /* Removes the border */
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Optional: Adds some shadow for depth */
-    border-radius: 8px;
-    box-sizing: border-box;
+.project:hover {
+  transform: scale(1.05); /* Slightly enlarges the project box on hover */
+}
+
+iframe {
+  width: 100%; /* Ensures the iframe takes the full width of the container */
+  display: block; /* Removes the default inline behavior */
+  border: none; /* Removes the default border */
 }
 
 
