@@ -102,10 +102,10 @@ section h2 {
     flex-grow: 1; /* Allows the paragraph to fill the space */
 }
 
-.project-img {
+.project video {
     width: 100%;
     height: auto;
-    border-radius: 5px;
+    border-radius: 8px;
     margin-bottom: 15px;
 }
 
