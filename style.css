@@ -85,8 +85,8 @@ section h2 {
     overflow: hidden;
     flex: 1 1 300px; /* Allows flex items to grow and shrink but not be smaller than 300px */
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    margin: 20px;
-    padding: 20px;
+    margin: 0;
+    padding: 0;
     background: #ffffff;
     border-radius: 10px;
     transition: transform 0.3s ease-in-out;
@@ -105,8 +105,6 @@ section h2 {
 
 .project iframe {
     width: 100%;
-    max-width: 640px; /* Adjust as necessary */
-    max-height: 360px; /* Adjust as necessary */
     border: none; /* Removes default border around iframe */
 }
 
@@ -121,11 +119,12 @@ footer {
 }
 
 /* Responsive design */
-@media (max-width: 768px) {
-    .project-container {
-        flex-direction: column;
+@media (min-width: 600px) {
+    .project iframe {
+        width: 90%;
+        margin: auto;
     }
-
+}
     .project {
         width: 100%; /* Full width on smaller screens */
         margin: 20px 0; /* Only vertical margin */
