@@ -1,158 +1,37 @@
-/* Reset default spacing and borders */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-/* General body styles */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    line-height: 1.6;
-    padding: 20px;
-    background-color: #f4f4f4;
-    color: #333;
-    overflow-x: hidden;
+  background-color: #0e0e0e;
+  color: #e5e5e5;
+  font-family: monospace;
+  padding: 2rem;
+  max-width: 700px;
+  margin: auto;
 }
 
-p {
-  margin-bottom: 1em; /* adds space after paragraphs */
+a {
+  color: #08f;
+  text-decoration: none;
 }
 
-/* Header styles */
-header {
-    background-color: #005A9C;
-    color: #ffffff;
-    padding: 40px 0;
-    text-align: center;
+a:hover {
+  text-decoration: underline;
 }
 
-header h1 {
-    margin-bottom: 5px;
-    font-size: 2.5rem;
+h1 {
+  font-size: 2rem;
+  color: #fff;
 }
 
-header p {
-    font-size: 1.2rem;
-    margin-top: 5px;
+em {
+  color: #aaa;
 }
 
-/* Navigation styles */
-nav ul {
-    background-color: #023E73;
-    text-align: center;
-    padding: 15px 0;
-    margin-bottom: 40px; /* Space between nav and content */
+ul {
+  list-style-type: square;
+  margin-left: 1.5rem;
 }
 
-nav ul li {
-    display: inline;
-    margin: 0 10px; /* Space between nav items */
-}
-
-nav ul li a {
-    color: #ffffff;
-    padding: 10px 20px;
-    text-decoration: none;
-    transition: background-color 0.3s ease-in-out;
-}
-
-nav ul li a:hover,
-nav ul li a:focus {
-    background-color: #021E36;
-}
-
-/* Main content and sections */
-main {
-    padding-bottom: 40px; /* Space at the bottom of content */
-}
-
-section {
-    margin-bottom: 40px; /* Space between sections */
-}
-
-section h2 {
-    margin-bottom: 20px; /* Space below section headings */
-    color: #005A9C;
-    border-bottom: 2px solid #005A9C;
-    padding-bottom: 5px;
-}
-
-/* Project styles */
-.project-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    margin: 0 auto;
-    max-width: 1200px; /* Adjust this to fit your desired width */
-}
-
-.project {
-    background-color: #000; /* Set the background to black */
-    color: #fff; /* Set the text color to white */
-    padding: 20px;
-    margin-bottom: 30px;
-    border-radius: 5px;
-    box-shadow: 2px 2px 5px rgba(0,0,0,0.2); /* Optional: adds a shadow to the box */
-}
-
-.project h3 {
-    font-size: 1.5rem;
-    margin-bottom: 10px; /* Space below project title */
-}
-
-.project p {
-    flex-grow: 1; /* Allows the paragraph to fill the space */
-}
-
-.project a {
-    color: #fff; /* Set the link color to white */
-}
-
-.project a:hover {
-    color: #ddd; /* Optional: Lighten the link color on hover */
-}
-
-.project:hover {
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-}
-
-
-iframe {
-  width: 100%; /* Ensures the iframe takes the full width of the container */
-  display: block; /* Removes the default inline behavior */
-  border: none; /* Removes the default border */
-}
-
-
-/* Footer styles */
 footer {
-    background-color: #023E73;
-    color: #ffffff;
-    text-align: center;
-    padding: 20px;
-    margin-top: 40px; /* Space above footer */
-}
-
-/* Responsive design */
-@media (max-width: 768px) {
-    .project {
-        width: 100%; /* Full width on smaller screens */
-    }
-}
-
-    .project {
-        width: 100%; /* Full width on smaller screens */
-        margin: 20px 0; /* Only vertical margin */
-    }
-
-    nav ul li {
-        display: block; /* Stack the nav items on smaller screens */
-    }
-
-    nav ul li a {
-        display: block; /* Full width for touch targets on mobile */
-        padding: 15px;
-    }
+  margin-top: 3rem;
+  font-size: 0.9rem;
+  color: #666;
 }
