@@ -17,10 +17,13 @@ function renderIssues(){
   if (!grid) return;
 
   // Sort by date (desc), then take first 6
-  const items = [...ISSUES].sort((a,b)=> (b.date||'').localeCompare(a.date||'' )).slice(0,6);
+  const items = [...ISSUES]
+    .sort((a,b)=> (b.date||'').localeCompare(a.date||''))
+    .slice(0,6);
 
   grid.innerHTML = items.map(it => {
     const label = `#${String(it.no).padStart(3,'0')} • ${it.title}`;
+    // IMPORTANT: relative path for GitHub Pages project sites
     const href = `posts/${it.slug}.html`;
     return `
       <a class="issue" href="${href}" aria-label="${label}">
