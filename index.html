@@ -1,45 +1,239 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Christian | Software Developer</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Unfiltered — The Nerd Culture Magazine</title>
+  <meta name="description" content="Unfiltered delivers game reviews, pop culture deep dives, and unapologetically nerdy features. Subscribe today." />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <main>
-    <h1>Christian</h1>
-    <p>Software developer. Backend-heavy. I build things that work.</p>
+  <header>
+    <nav class="container">
+      <a class="logo" href="#">
+        <span class="logo-dot" aria-hidden="true"></span>
+        <span>Unfiltered</span>
+      </a>
+      <div class="nav-links">
+        <a href="#issues">Issues</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#faq">FAQ</a>
+        <button class="theme-toggle" id="themeBtn" aria-label="Toggle theme" title="Toggle theme">
+          <svg id="iconMoon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" stroke="currentColor" stroke-width="2"/></svg>
+          <svg id="iconSun" width="18" height="18" viewBox="0 0 24 24" fill="none" style="display:none" aria-hidden="true"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/><path d="M12 2v3m0 14v3M4.22 4.22l2.12 2.12m11.32 11.32 2.12 2.12M2 12h3m14 0h3M4.22 19.78l2.12-2.12m11.32-11.32 2.12-2.12" stroke="currentColor" stroke-width="2"/></svg>
+        </button>
+      </div>
+    </nav>
+  </header>
 
-    <section>
-      <h2>Skills</h2>
-      <ul>
-        <li>Swift / SwiftUI</li>
-        <li>JavaScript / TypeScript</li>
-        <li>React / React Native</li>
-        <li>Node.js / Express</li>
-        <li>C# / .NET</li>
-        <li>SQL / Firebase / Azure</li>
-      </ul>
+  <main class="container">
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-grid">
+        <div>
+          <span class="badge">New issue every Friday</span>
+          <h1>Game reviews and deep dives for unapologetic nerds.</h1>
+          <p>From indie gems to triple-A epics, anime breakdowns, tabletop tactics, cosplay craft, and film analysis. No fluff. No clickbait. Just signal.</p>
+          <div class="hero-cta">
+            <button class="btn accent" data-checkout="pro">Subscribe now</button>
+            <a class="btn" href="#issues">Browse recent issues</a>
+          </div>
+          <div class="perks">
+            <span class="pill">Ad-free</span>
+            <span class="pill">Member Discord</span>
+            <span class="pill">Early reviews</span>
+          </div>
+        </div>
+        <div class="hero-card" aria-label="Highlight">
+          <div class="badge" aria-hidden="true">Featured</div>
+          <div class="hero-list-title">
+            <div class="logo-dot lg" aria-hidden="true"></div>
+            <strong>Inside this week</strong>
+          </div>
+          <ul class="clean">
+            <li><span class="check">✓</span><div><strong>Boss Design 101</strong><br><span class="small">Why some DLC bosses feel different and how they teach you</span></div></li>
+            <li><span class="check">✓</span><div><strong>JRPG Time Capsules</strong><br><span class="small">Three modern games that secretly play like it’s 1999</span></div></li>
+            <li><span class="check">✓</span><div><strong>Tabletop Lab</strong><br><span class="small">Homebrew initiative systems that speed up combat</span></div></li>
+          </ul>
+          <button class="btn" data-checkout="starter">Get starter plan</button>
+        </div>
+      </div>
     </section>
 
-    <section>
-      <h2>Experience</h2>
-      <ul>
-        <li>Built mobile apps for real-time tracking and communication</li>
-        <li>Developed encrypted systems with local-only data handling</li>
-        <li>Worked across full-stack environments under tight deadlines</li>
-        <li>Handled CI/CD, cloud deployments, and scaling backend infrastructure</li>
-      </ul>
+    <!-- Features -->
+    <section aria-labelledby="featuresTitle">
+      <h2 id="featuresTitle" class="sr-only">Why subscribe</h2>
+      <div class="features">
+        <div class="feature">
+          <h3>Honest reviews</h3>
+          <p>No paid scores. We explain what works, what drags, and who it’s for.</p>
+        </div>
+        <div class="feature">
+          <h3>Deep analysis</h3>
+          <p>Design, narrative, speedrunning tech, mod scenes, and more.</p>
+        </div>
+        <div class="feature">
+          <h3>Member perks</h3>
+          <p>Discord access, early drops, zine PDFs, and community polls.</p>
+        </div>
+      </div>
     </section>
 
-    <section>
-      <h2>Link(s)</h2>
-      <p><a href="https://twitter.com/sudochr" target="_blank">Twitter</a></p>
+    <!-- Issues -->
+    <section id="issues" class="issues" aria-labelledby="issuesTitle">
+      <h2 id="issuesTitle" class="section-title">Recent issues</h2>
+      <div class="issue-grid">
+        <a class="issue" href="#"><span>#042 • Soulslikes, Again</span></a>
+        <a class="issue" href="#"><span>#041 • Cozy Horror</span></a>
+        <a class="issue" href="#"><span>#040 • JRPG Towns</span></a>
+        <a class="issue" href="#"><span>#039 • Deckbuild Tactics</span></a>
+        <a class="issue" href="#"><span>#038 • Anime OSTs</span></a>
+        <a class="issue" href="#"><span>#037 • Modding 101</span></a>
+      </div>
     </section>
 
-    <footer>
-      <p>No JavaScript. No frameworks. Just HTML and CSS. It still works.</p>
-    </footer>
+    <!-- Pricing (two tiers) -->
+    <section id="pricing" class="pricing" aria-labelledby="pricingTitle">
+      <h2 id="pricingTitle" class="section-title center">Choose your plan</h2>
+
+      <div class="price-toggle">
+        <span>Monthly</span>
+        <div class="switch" id="priceSwitch" role="switch" aria-checked="false" tabindex="0"><div class="knob"></div></div>
+        <span>Annual <span class="small">(2 months free)</span></span>
+      </div>
+
+      <div class="price-grid two-up">
+        <!-- Starter -->
+        <div class="card">
+          <h4>Starter</h4>
+          <div class="price">
+            <span class="price-monthly">$4</span>
+            <span class="price-annual" style="display:none">$40</span>
+            <span class="small"> / <span class="unit">mo</span></span>
+          </div>
+          <ul class="clean">
+            <li><span class="check">✓</span> Weekly issue</li>
+            <li><span class="check">✓</span> Ad-free site</li>
+            <li><span class="check">✓</span> Comment access</li>
+          </ul>
+          <button class="btn" data-checkout="starter">Start Starter</button>
+        </div>
+
+        <!-- Pro -->
+        <div class="card featured">
+          <h4>Pro</h4>
+          <div class="price">
+            <span class="price-monthly">$8</span>
+            <span class="price-annual" style="display:none">$80</span>
+            <span class="small"> / <span class="unit">mo</span></span>
+          </div>
+          <ul class="clean">
+            <li><span class="check">✓</span> Everything in Starter</li>
+            <li><span class="check">✓</span> Bonus features and guides</li>
+            <li><span class="check">✓</span> Member Discord + polls</li>
+            <li><span class="check">✓</span> Monthly PDF zine</li>
+          </ul>
+          <button class="btn accent" data-checkout="pro">Go Pro</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials" aria-labelledby="testTitle">
+      <h2 id="testTitle" class="sr-only">What readers say</h2>
+      <div class="quote">
+        <blockquote>“Sharp writing. No hype. Their breakdowns helped me finally beat a boss I was stuck on for a week.”</blockquote>
+        <cite>— Alex P</cite>
+      </div>
+      <div class="quote">
+        <blockquote>“My favorite Friday read. The PDF zines look great on a tablet.”</blockquote>
+        <cite>— Morgan K</cite>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="faq" aria-labelledby="faqTitle">
+      <h2 id="faqTitle" class="sr-only">FAQ</h2>
+      <details>
+        <summary>What’s inside a typical issue?</summary>
+        <p>One marquee review, two short takes, a design or lore deep dive, and a community pick.</p>
+      </details>
+      <details>
+        <summary>Do I keep access if I cancel?</summary>
+        <p>You keep access through the end of your billing period. You can download PDFs to keep.</p>
+      </details>
+      <details>
+        <summary>Do you cover tabletop and anime?</summary>
+        <p>Yes. We include tabletop spotlights and anime features when the topic fits the theme.</p>
+      </details>
+      <details>
+        <summary>Is there a student discount?</summary>
+        <p>Yes. Use code <strong>STUDENT</strong> on the Pro plan for 20% off.</p>
+      </details>
+    </section>
   </main>
+
+  <footer class="container">
+    <div class="foot">
+      <div class="logo"><span class="logo-dot"></span><span>Unfiltered</span> <span class="small" style="margin-left:10px">© <span id="year"></span></span></div>
+      <div class="social" aria-label="social links">
+        <a href="#" aria-label="Twitter">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M22 5.8c-.7.3-1.5.5-2.3.6.8-.5 1.4-1.2 1.7-2.1-.8.5-1.7.8-2.6 1C17.9 4.4 16.8 4 15.6 4c-2.3 0-4.1 1.9-4.1 4.1 0 .3 0 .6 .1 .9C8 8.9 5.1 7.3 3.1 4.9c-.4 .7-.6 1.5-.6 2.3 0 1.4 .7 2.7 1.9 3.4-.6 0-1.2-.2-1.7-.5 0 2 1.4 3.7 3.3 4.1-.3 .1-.7 .1-1 .1-.2 0-.5 0-.7-.1 .5 1.6 2.1 2.8 4 2.8-1.5 1.2-3.5 1.9-5.5 1.9h-1c2 1.2 4.4 1.9 6.9 1.9 8.3 0 12.9-6.9 12.9-12.9v-.6c.9-.6 1.6-1.4 2.1-2.3z" stroke="currentColor" stroke-width="1"/></svg>
+        </a>
+        <a href="#" aria-label="YouTube">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3" stroke="currentColor" stroke-width="1"/><path d="M10 9v6l6-3-6-3z" fill="currentColor"/></svg>
+        </a>
+        <a href="#" aria-label="Discord">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 7c2.5-1.2 7.5-1.2 10 0l1.5 8.5c-2 1.5-4 2-6.5 2s-4.5-.5-6.5-2L7 7Z" stroke="currentColor" stroke-width="1"/><circle cx="9.5" cy="12" r="1" fill="currentColor"/><circle cx="14.5" cy="12" r="1" fill="currentColor"/></svg>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Checkout Modal -->
+  <div id="modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-hidden="true">
+    <div class="modal">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <h3 id="modalTitle" style="font-family:'Space Grotesk';margin:0">Subscribe to <span id="planName">Pro</span></h3>
+        <button class="close-x" id="closeModal" aria-label="Close">✕</button>
+      </div>
+      <p class="small" style="margin:6px 0 12px;color:var(--muted)">This is a mock checkout to help you visualize the flow. Replace with Stripe or your gateway later.</p>
+      <form id="checkoutForm">
+        <div class="grid-2" style="margin-bottom:10px">
+          <div>
+            <label class="small" for="name">Name</label>
+            <input id="name" name="name" autocomplete="name" placeholder="Sam Player" required />
+          </div>
+          <div>
+            <label class="small" for="email">Email</label>
+            <input id="email" name="email" autocomplete="email" inputmode="email" placeholder="you@example.com" required />
+          </div>
+        </div>
+        <div class="grid-2" style="margin-bottom:10px">
+          <div>
+            <label class="small" for="country">Country</label>
+            <select id="country" required>
+              <option value="">Select…</option>
+              <option>United States</option>
+              <option>Canada</option>
+              <option>United Kingdom</option>
+              <option>Australia</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div>
+            <label class="small" for="code">Discount code</label>
+            <input id="code" placeholder="Optional" />
+          </div>
+        </div>
+        <button class="btn accent" type="submit" style="width:100%;justify-content:center">Complete signup</button>
+      </form>
+      <p id="feedback" class="small" role="status" style="display:none;margin-top:10px"></p>
+    </div>
+  </div>
+
+<script src="main.js"></script>
 </body>
 </html>
