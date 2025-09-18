@@ -178,3 +178,27 @@ input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 6px var(--r
   font-size: 1.4rem;
 }
 .article p { margin-bottom: 1em; }
+
+/* Better article layout balance */
+.article header {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.article h1,
+.article p.small {
+  max-width: 750px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.article h1 {
+  text-align: center;       /* centers the big title */
+  margin-top: 0.5em;
+}
+
+.article p.small {
+  text-align: center;       /* centers the "Published…" line */
+  color: var(--muted);
+}
+
