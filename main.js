@@ -1,3 +1,36 @@
+// === Weekly issues data (newest first). Update this list weekly. ===
+// Each entry: { no: 42, title: "Soulslikes, Again", slug: "042-soulslikes-again", date: "2025-09-05" }
+const ISSUES = [
+  { no: 43, title: "Boss Design 101", slug: "043-boss-design-101", date: "2025-09-12" },
+  { no: 42, title: "Soulslikes, Again", slug: "042-soulslikes-again", date: "2025-09-05" },
+  { no: 41, title: "Cozy Horror", slug: "041-cozy-horror", date: "2025-08-29" },
+  { no: 40, title: "JRPG Towns", slug: "040-jrpg-towns", date: "2025-08-22" },
+  { no: 39, title: "Deckbuild Tactics", slug: "039-deckbuild-tactics", date: "2025-08-15" },
+  { no: 38, title: "Anime OSTs", slug: "038-anime-osts", date: "2025-08-08" },
+  { no: 37, title: "Modding 101", slug: "037-modding-101", date: "2025-08-01" },
+  // Keep older ones below if you want an archive later
+];
+
+// Render latest 6 cards into the grid
+function renderIssues(){
+  const grid = document.getElementById('issueGrid');
+  if (!grid) return;
+
+  // Sort by date (desc), then take first 6
+  const items = [...ISSUES].sort((a,b)=> (b.date||'').localeCompare(a.date||'' )).slice(0,6);
+
+  grid.innerHTML = items.map(it => {
+    const label = `#${String(it.no).padStart(3,'0')} • ${it.title}`;
+    const href = `posts/${it.slug}.html`;
+    return `
+      <a class="issue" href="${href}" aria-label="${label}">
+        <span>${label}</span>
+      </a>`;
+  }).join('');
+}
+document.addEventListener('DOMContentLoaded', renderIssues);
+
+
 /* Unfiltered interactions */
 const root = document.documentElement;
 const themeBtn = document.getElementById('themeBtn');
