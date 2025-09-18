@@ -149,3 +149,23 @@ input,select{
 input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 6px var(--ring)}
 .close-x{cursor:pointer;font-weight:800;color:var(--muted)}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+/* ===== Article Page ===== */
+.article {
+  max-width: 750px;
+  margin: 40px auto;
+  line-height: 1.7;
+}
+.article h1 {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 2rem;
+  margin-bottom: 0.2em;
+}
+.article h2 {
+  font-family: "Space Grotesk", sans-serif;
+  margin-top: 1.5em;
+  font-size: 1.4rem;
+}
+.article p {
+  margin-bottom: 1em;
+}
