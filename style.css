@@ -170,3 +170,27 @@ input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 6px var(--r
   margin-bottom: 1em;
 }
 
+/* --- Fix header overlay on article pages --- */
+header{
+  position: sticky;
+  top: 0;
+  z-index: 1000;           /* keep it above page content */
+  background: var(--bg);   /* make it opaque instead of translucent */
+  backdrop-filter: none;   /* optional: remove blur that can cause compositing quirks */
+}
+
+/* Give the content a little breathing room below the sticky nav line */
+main.container{
+  padding-top: 8px;
+}
+
+/* (Optional) keep the nice gradient look but with a solid base behind it */
+@media (prefers-reduced-transparency: no-preference){
+  header{
+    background:
+      linear-gradient(180deg, var(--bg) 70%, rgba(0,0,0,0)),
+      var(--bg);
+  }
+}
+
+
