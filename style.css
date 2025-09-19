@@ -109,6 +109,8 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:14px 2
   font-weight: 600;
 }
 
+.issue-grid { min-height: 220px; }
+
 
 /* Pricing */
 .pricing{margin:36px 0}
@@ -204,6 +206,7 @@ main.container{
       var(--bg);
   }
 }
+
 
 
 
