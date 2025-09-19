@@ -24,16 +24,17 @@ function renderIssues(){
     .slice(0,6);
 
   grid.innerHTML = items.map(it => {
-    const label = `#${String(it.no).padStart(3,'0')} • ${it.title}`;
-    const href  = `posts/${it.slug}.html`;          // relative for project pages
-    const base  = `covers/${it.slug}`;               // we’ll try .jpg, then .png
-    return `
-      <a class="issue" href="${href}" aria-label="${label}">
-        <img class="cover" src="${base}.jpg" alt=""
-             onerror="this.onerror=null; this.src='${base}.png'">
-        <span>${label}</span>
-      </a>`;
-  }).join('');
+  const label = `#${String(it.no).padStart(3,'0')} • ${it.title}`;
+  const href  = `posts/${it.slug}.html`;
+  const img   = `covers/${it.slug}.jpeg`; // 👈 make sure extension matches!
+
+  return `
+    <a class="issue" href="${href}" aria-label="${label}">
+      <img src="${img}" alt="${label}" class="issue-cover"/>
+      <span>${label}</span>
+    </a>`;
+}).join('');
+
 }
 document.addEventListener('DOMContentLoaded', renderIssues);
 
@@ -156,4 +157,5 @@ codeInput?.addEventListener('input', e => {
     feedback.style.display = 'none';
   }
 });
+
 
