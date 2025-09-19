@@ -16,6 +16,23 @@ function renderIssues(){
   const grid = document.getElementById('issueGrid');
   if (!grid) return;
 
+  const items = [...ISSUES]
+    .sort((a,b)=> (b.date||'').localeCompare(a.date||''))
+    .slice(0,6);
+
+  grid.innerHTML = items.map(it => {
+    const label = `#${String(it.no).padStart(3,'0')} • ${it.title}`;
+    const href  = `posts/${it.slug}.html`;
+    const cover = `covers/${it.slug}.jpg`; // image per issue
+    return `
+      <a class="issue" href="${href}" aria-label="${label}" 
+         style="background-image:url('${cover}'); background-size:cover; background-position:center;">
+        <span>${label}</span>
+      </a>`;
+  }).join('');
+}
+
+
   // Sort by date (desc), then take first 6
   const items = [...ISSUES]
     .sort((a,b)=> (b.date||'').localeCompare(a.date||''))
@@ -150,3 +167,4 @@ codeInput?.addEventListener('input', e => {
     feedback.style.display = 'none';
   }
 });
+
