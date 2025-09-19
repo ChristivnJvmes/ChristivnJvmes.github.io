@@ -14,7 +14,10 @@ const ISSUES = [
 // Render latest 6 cards into the grid
 function renderIssues(){
   const grid = document.getElementById('issueGrid');
-  if (!grid) return;
+  if (!grid) {
+    console.warn('[Unfiltered] #issueGrid not found on this page.');
+    return;
+  }
 
   const items = [...ISSUES]
     .sort((a,b)=> (b.date||'').localeCompare(a.date||''))
@@ -22,15 +25,17 @@ function renderIssues(){
 
   grid.innerHTML = items.map(it => {
     const label = `#${String(it.no).padStart(3,'0')} • ${it.title}`;
-    const href  = `posts/${it.slug}.html`;
-    const cover = `covers/${it.slug}.jpg`; // image per issue
+    const href  = `posts/${it.slug}.html`;        // relative for project pages
+    const cover = `covers/${it.slug}.jpg`;        // optional cover image
     return `
-      <a class="issue" href="${href}" aria-label="${label}" 
-         style="background-image:url('${cover}'); background-size:cover; background-position:center;">
+      <a class="issue" href="${href}" aria-label="${label}"
+         style="background-image:url('${cover}');background-size:cover;background-position:center;">
         <span>${label}</span>
       </a>`;
   }).join('');
 }
+document.addEventListener('DOMContentLoaded', renderIssues);
+
 
 
   // Sort by date (desc), then take first 6
@@ -167,4 +172,5 @@ codeInput?.addEventListener('input', e => {
     feedback.style.display = 'none';
   }
 });
+
 
