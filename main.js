@@ -1,18 +1,18 @@
-// === Weekly issues data (newest first). Update this list weekly. ===
-// Each entry: { no: 42, title: "Soulslikes, Again", slug: "042-soulslikes-again", date: "2025-09-05" }
+// ====== Unfiltered — main.js (working) ======
+
+// --- Issues data (newest first). Update this list weekly. ---
 const ISSUES = [
-  { no: 43, title: "Boss Design 101", slug: "043-boss-design-101", date: "2025-09-12" },
-  { no: 42, title: "Soulslikes, Again", slug: "042-soulslikes-again", date: "2025-09-05" },
-  { no: 41, title: "Cozy Horror", slug: "041-cozy-horror", date: "2025-08-29" },
-  { no: 40, title: "JRPG Towns", slug: "040-jrpg-towns", date: "2025-08-22" },
-  { no: 39, title: "Deckbuild Tactics", slug: "039-deckbuild-tactics", date: "2025-08-15" },
-  { no: 38, title: "Anime OSTs", slug: "038-anime-osts", date: "2025-08-08" },
-  { no: 37, title: "Modding 101", slug: "037-modding-101", date: "2025-08-01" },
-  // Keep older ones below if you want an archive later
+  { no: 43, title: "Boss Design 101",    slug: "043-boss-design-101",    date: "2025-09-12" },
+  { no: 42, title: "Soulslikes, Again",  slug: "042-soulslikes-again",   date: "2025-09-05" },
+  { no: 41, title: "Cozy Horror",        slug: "041-cozy-horror",        date: "2025-08-29" },
+  { no: 40, title: "JRPG Towns",         slug: "040-jrpg-towns",         date: "2025-08-22" },
+  { no: 39, title: "Deckbuild Tactics",  slug: "039-deckbuild-tactics",  date: "2025-08-15" },
+  { no: 38, title: "Anime OSTs",         slug: "038-anime-osts",         date: "2025-08-08" },
+  { no: 37, title: "Modding 101",        slug: "037-modding-101",        date: "2025-08-01" }
 ];
 
-// Render latest 6 cards into the grid
-function renderIssues(){
+// --- Render latest 6 cards into the grid ---
+function renderIssues() {
   const grid = document.getElementById('issueGrid');
   if (!grid) {
     console.warn('[Unfiltered] #issueGrid not found on this page.');
@@ -20,13 +20,14 @@ function renderIssues(){
   }
 
   const items = [...ISSUES]
-    .sort((a,b)=> (b.date||'').localeCompare(a.date||''))
-    .slice(0,6);
+    .sort((a, b) => (b.date || '').localeCompare(a.date || ''))
+    .slice(0, 6);
 
   grid.innerHTML = items.map(it => {
     const label = `#${String(it.no).padStart(3,'0')} • ${it.title}`;
-    const href  = `posts/${it.slug}.html`;        // relative for project pages
-    const cover = `covers/${it.slug}.jpg`;        // optional cover image
+    // IMPORTANT for GitHub Pages project sites: use relative paths (no leading slash)
+    const href  = `posts/${it.slug}.html`;
+    const cover = `covers/${it.slug}.jpg`; // add a .jpg per slug under /covers/
     return `
       <a class="issue" href="${href}" aria-label="${label}"
          style="background-image:url('${cover}');background-size:cover;background-position:center;">
@@ -34,37 +35,20 @@ function renderIssues(){
       </a>`;
   }).join('');
 }
+
 document.addEventListener('DOMContentLoaded', renderIssues);
 
-
-
-  // Sort by date (desc), then take first 6
-  const items = [...ISSUES]
-    .sort((a,b)=> (b.date||'').localeCompare(a.date||''))
-    .slice(0,6);
-
-  grid.innerHTML = items.map(it => {
-    const label = `#${String(it.no).padStart(3,'0')} • ${it.title}`;
-    // IMPORTANT: relative path for GitHub Pages project sites
-    const href = `posts/${it.slug}.html`;
-    return `
-      <a class="issue" href="${href}" aria-label="${label}">
-        <span>${label}</span>
-      </a>`;
-  }).join('');
-}
-document.addEventListener('DOMContentLoaded', renderIssues);
-
-
-/* Unfiltered interactions */
+// ====== Theme toggle ======
 const root = document.documentElement;
 const themeBtn = document.getElementById('themeBtn');
 const iconMoon = document.getElementById('iconMoon');
 const iconSun  = document.getElementById('iconSun');
 const savedTheme = localStorage.getItem('theme');
-const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+const prefersLight = window.matchMedia && window.matchMedia('(perspective: 1px)').matches
+  ? false
+  : (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches);
 
-// Theme
+// Set initial theme
 if (savedTheme === 'light' || (!savedTheme && prefersLight)) {
   root.classList.add('light');
   if (iconMoon) iconMoon.style.display = 'none';
@@ -80,11 +64,11 @@ if (themeBtn) {
   });
 }
 
-// Footer year
+// ====== Footer year ======
 const yearEl = document.getElementById('year');
 if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-// Pricing toggle
+// ====== Pricing toggle ======
 const switchEl   = document.getElementById('priceSwitch');
 const monthlyEls = document.querySelectorAll('.price-monthly');
 const annualEls  = document.querySelectorAll('.price-annual');
@@ -107,7 +91,7 @@ if (switchEl){
   });
 }
 
-// Modal checkout (mock)
+// ====== Modal checkout (mock) ======
 const modal        = document.getElementById('modal');
 const closeModal   = document.getElementById('closeModal');
 const planNameEl   = document.getElementById('planName');
@@ -172,5 +156,3 @@ codeInput?.addEventListener('input', e => {
     feedback.style.display = 'none';
   }
 });
-
-
