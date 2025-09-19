@@ -12,7 +12,7 @@ const ISSUES = [
 ];
 
 // --- Render latest 6 cards into the grid ---
-function renderIssues() {
+function renderIssues(){
   const grid = document.getElementById('issueGrid');
   if (!grid) {
     console.warn('[Unfiltered] #issueGrid not found on this page.');
@@ -20,23 +20,23 @@ function renderIssues() {
   }
 
   const items = [...ISSUES]
-    .sort((a, b) => (b.date || '').localeCompare(a.date || ''))
-    .slice(0, 6);
+    .sort((a,b)=> (b.date||'').localeCompare(a.date||''))
+    .slice(0,6);
 
   grid.innerHTML = items.map(it => {
     const label = `#${String(it.no).padStart(3,'0')} • ${it.title}`;
-    // IMPORTANT for GitHub Pages project sites: use relative paths (no leading slash)
-    const href  = `posts/${it.slug}.html`;
-    const cover = `covers/${it.slug}.jpg`; // add a .jpg per slug under /covers/
+    const href  = `posts/${it.slug}.html`;          // relative for project pages
+    const base  = `covers/${it.slug}`;               // we’ll try .jpg, then .png
     return `
-      <a class="issue" href="${href}" aria-label="${label}"
-         style="background-image:url('${cover}');background-size:cover;background-position:center;">
+      <a class="issue" href="${href}" aria-label="${label}">
+        <img class="cover" src="${base}.jpg" alt=""
+             onerror="this.onerror=null; this.src='${base}.png'">
         <span>${label}</span>
       </a>`;
   }).join('');
 }
-
 document.addEventListener('DOMContentLoaded', renderIssues);
+
 
 // ====== Theme toggle ======
 const root = document.documentElement;
@@ -156,3 +156,4 @@ codeInput?.addEventListener('input', e => {
     feedback.style.display = 'none';
   }
 });
+
