@@ -23,19 +23,23 @@ function renderIssues(){
     .sort((a,b)=> (b.date||'').localeCompare(a.date||''))
     .slice(0,6);
 
-  grid.innerHTML = items.map(it => {
+ grid.innerHTML = items.map(it => {
   const label = `#${String(it.no).padStart(3,'0')} • ${it.title}`;
   const href  = `posts/${it.slug}.html`;
-  const img   = `covers/${it.slug}.jpeg`; // 👈 make sure extension matches!
+  const base  = `covers/${it.slug}`;  // we'll try jpeg -> jpg -> png, then hide
 
   return `
     <a class="issue" href="${href}" aria-label="${label}">
-      <img src="${img}" alt="${label}" class="issue-cover"/>
+      <img class="cover" src="${base}.jpeg" alt=""
+        onerror="
+          if(!this._try){ this._try=1; this.src='${base}.jpg'; }
+          else if(this._try===1){ this._try=2; this.src='${base}.png'; }
+          else { this.remove(); }
+        ">
       <span>${label}</span>
     </a>`;
 }).join('');
 
-}
 document.addEventListener('DOMContentLoaded', renderIssues);
 
 
@@ -157,5 +161,6 @@ codeInput?.addEventListener('input', e => {
     feedback.style.display = 'none';
   }
 });
+
 
 
