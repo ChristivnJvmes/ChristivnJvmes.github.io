@@ -13,10 +13,7 @@ const ISSUES = [
 // Render latest 6 cards into the grid
 function renderIssues(){
   const grid = document.getElementById('issueGrid');
-  if (!grid) {
-    console.warn('[Unfiltered] #issueGrid not found on this page.');
-    return;
-  }
+  if (!grid) return;
 
   const items = [...ISSUES]
     .sort((a,b)=> (b.date||'').localeCompare(a.date||''))
@@ -24,19 +21,23 @@ function renderIssues(){
 
   grid.innerHTML = items.map(it => {
     const label = `#${String(it.no).padStart(3,'0')} • ${it.title}`;
-    const href  = `posts/${it.slug}.html`;
-    const base  = `covers/${it.slug}`;
+    const href  = `posts/${it.slug}.html`;       // relative path for GH Pages
+    const base  = `covers/${it.slug}`;           // optional cover
+
     return `
-      <a class="issue" href="\${href}" aria-label="\${label}">
-        <img class="cover" src="\${base}.jpeg" alt=""
-             onerror="if(!this._t){this._t=1; this.src='\${base}.jpg';}
-                      else if(this._t===1){this._t=2; this.src='\${base}.png';}
-                      else { this.remove(); }">
-        <span>\${label}</span>
+      <a class="issue" href="${href}" aria-label="${label}">
+        <img class="cover" src="${base}.jpeg" alt=""
+             onerror="
+               if(!this._try){ this._try=1; this.src='${base}.jpg'; }
+               else if(this._try===1){ this._try=2; this.src='${base}.png'; }
+               else { this.remove(); }
+             ">
+        <span>${label}</span>
       </a>`;
   }).join('');
 }
 document.addEventListener('DOMContentLoaded', renderIssues);
+
 
 /* Unfiltered interactions */
 const root = document.documentElement;
