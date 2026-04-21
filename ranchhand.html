@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RanchHand AI — System Architecture</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; background: #0C1008; }
+    body { font-family: 'IBM Plex Mono', monospace; color: #D4E8B0; }
+
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #0C1008; }
+    ::-webkit-scrollbar-thumb { background: #2A3520; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #4A7A28; }
+
+    button { font-family: 'IBM Plex Mono', monospace; }
+
+    .tab-btn {
+      background: transparent;
+      border-radius: 4px;
+      padding: 5px 14px;
+      font-size: 11px;
+      cursor: pointer;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      transition: all 0.15s;
+      border: 1px solid #2A3520;
+      color: #6B7E58;
+    }
+    .tab-btn.active {
+      background: #7EC845;
+      color: #0C1008;
+      border-color: #7EC845;
+    }
+    .code-tab-btn {
+      background: transparent;
+      border-radius: 4px;
+      padding: 5px 12px;
+      font-size: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.15s;
+      border: 1px solid #2A3520;
+      color: #6B7E58;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    .code-tab-btn.active {
+      background: #4A7A28;
+      color: #F0F4E8;
+      border-color: #7EC845;
+    }
+    .copy-btn {
+      background: transparent;
+      border-radius: 4px;
+      padding: 5px 14px;
+      font-size: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid #2A3520;
+      color: #6B7E58;
+      font-family: 'IBM Plex Mono', monospace;
+      margin-left: auto;
+    }
+    .copy-btn.copied {
+      color: #7EC845;
+      border-color: #7EC845;
+    }
+    pre {
+      margin: 0;
+      padding: 16px 18px;
+      font-size: 10.5px;
+      line-height: 1.7;
+      color: #D4E8B0;
+      overflow-x: auto;
+      max-height: 520px;
+      overflow-y: auto;
+      white-space: pre;
+    }
+    .node-group { cursor: pointer; }
+    .node-group:hover rect.node-bg { stroke: var(--node-color); stroke-width: 2; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState } = React;
+
+    const C = {
+      bg:      "#0C1008",
+      panel:   "#13180E",
+      border:  "#2A3520",
+      green:   "#7EC845",
+      greenDim:"#4A7A28",
+      amber:   "#F5A623",
+      blue:    "#4A9EFF",
+      purple:  "#A78BFA",
+      red:     "#F87171",
+      text:    "#D4E8B0",
+      muted:   "#6B7E58",
+      white:   "#F0F4E8",
+      codeBg:  "#0A0F07",
+    };
+
+    const NODE_W = 130, NODE_H = 54;
+    const SVG_W = 860,  SVG_H = 620;
+
+    const NODES = {
+      solar:   { label:"Solar Panel",       sub:"100W Mono",          color:C.amber,  x:60,  y:60  },
+      mppt:    { label:"MPPT Controller",   sub:"30A Renogy",          color:C.amber,  x:60,  y:190 },
+      battery: { label:"LiFePO4 Battery",   sub:"100Ah",               color:C.amber,  x:60,  y:320 },
+      buck19:  { label:"DC-DC Converter",   sub:"12V → 19V",           color:C.amber,  x:60,  y:450 },
+      jetson:  { label:"Jetson Orin NX",    sub:"16GB · AI Inference",  color:C.green,  x:310, y:270 },
+      rpi:     { label:"Raspberry Pi 5",    sub:"8GB · Orchestration",  color:C.green,  x:560, y:270 },
+      poe:     { label:"PoE Switch",        sub:"8-Port TP-Link",       color:C.blue,   x:310, y:110 },
+      cam1:    { label:"Camera 1",          sub:"4K IR · Pasture",      color:C.blue,   x:130, y:530 },
+      cam2:    { label:"Camera 2",          sub:"4K IR · Perimeter",    color:C.blue,   x:270, y:530 },
+      cam3:    { label:"Camera 3",          sub:"4K IR · Gate",         color:C.blue,   x:410, y:530 },
+      cam4:    { label:"Camera 4",          sub:"4K IR · Pen",          color:C.blue,   x:550, y:530 },
+      lte:     { label:"LTE HAT",           sub:"SIM7600G-H",           color:C.purple, x:700, y:190 },
+      cloud:   { label:"Cloud / Alerts",    sub:"Twilio · Dashboard",   color:C.purple, x:700, y:350 },
+      sensors: { label:"Sensors",           sub:"BME280 · PIR",         color:C.red,    x:700, y:110 },
+    };
+
+    const EDGES = [
+      { from:"solar",   to:"mppt",    style:"power"   },
+      { from:"mppt",    to:"battery", style:"power"   },
+      { from:"battery", to:"buck19",  style:"power"   },
+      { from:"buck19",  to:"jetson",  style:"power"   },
+      { from:"battery", to:"rpi",     style:"power"   },
+      { from:"battery", to:"poe",     style:"power"   },
+      { from:"poe",     to:"cam1",    style:"poe"     },
+      { from:"poe",     to:"cam2",    style:"poe"     },
+      { from:"poe",     to:"cam3",    style:"poe"     },
+      { from:"poe",     to:"cam4",    style:"poe"     },
+      { from:"poe",     to:"jetson",  style:"data"    },
+      { from:"jetson",  to:"rpi",     style:"data"    },
+      { from:"rpi",     to:"lte",     style:"data"    },
+      { from:"lte",     to:"cloud",   style:"wireless"},
+      { from:"rpi",     to:"sensors", style:"data"    },
+    ];
+
+    const ESTYLES = {
+      power:    { stroke:C.amber,  dash:"none", w:2   },
+      poe:      { stroke:C.blue,   dash:"none", w:1.5 },
+      data:     { stroke:C.green,  dash:"5,4",  w:1.5 },
+      wireless: { stroke:C.purple, dash:"3,5",  w:1.5 },
+    };
+
+    const LEGEND = [
+      { style:"power",    label:"DC Power"          },
+      { style:"poe",      label:"PoE (Power+Data)"  },
+      { style:"data",     label:"Data / GPIO"       },
+      { style:"wireless", label:"4G LTE Wireless"   },
+    ];
+
+    function cx(id){ return NODES[id].x + NODE_W/2; }
+    function cy(id){ return NODES[id].y + NODE_H/2; }
+    function path(f,t){
+      const x1=cx(f),y1=cy(f),x2=cx(t),y2=cy(t),mx=(x1+x2)/2;
+      return `M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`;
+    }
+
+    function Diagram() {
+      const [hov, setHov] = useState(null);
+      return (
+        <div style={{overflowX:"auto",padding:"8px 0"}}>
+          <svg width={SVG_W} height={SVG_H} viewBox={`0 0 ${SVG_W} ${SVG_H}`}
+            style={{display:"block",margin:"0 auto"}}>
+            <defs>
+              <pattern id="dots" width="30" height="30" patternUnits="userSpaceOnUse">
+                <circle cx="1" cy="1" r="0.8" fill={C.border}/>
+              </pattern>
+              {Object.entries(ESTYLES).map(([k,s]) => (
+                <marker key={k} id={`arr-${k}`} markerWidth="8" markerHeight="8"
+                  refX="6" refY="3" orient="auto">
+                  <path d="M0,0 L0,6 L8,3 z" fill={s.stroke} opacity="0.8"/>
+                </marker>
+              ))}
+            </defs>
+            <rect width={SVG_W} height={SVG_H} fill="url(#dots)"/>
+
+            {EDGES.map((e,i) => {
+              const s = ESTYLES[e.style];
+              const hi = hov===e.from||hov===e.to;
+              return (
+                <path key={i} d={path(e.from,e.to)} fill="none"
+                  stroke={s.stroke} strokeWidth={hi?s.w+1:s.w}
+                  strokeDasharray={s.dash}
+                  opacity={hov&&!hi?0.15:0.75}
+                  markerEnd={`url(#arr-${e.style})`}
+                  style={{transition:"opacity 0.2s"}}/>
+              );
+            })}
+
+            {Object.entries(NODES).map(([id,n]) => {
+              const hi = hov===id;
+              return (
+                <g key={id} transform={`translate(${n.x},${n.y})`}
+                  style={{cursor:"pointer"}}
+                  onMouseEnter={()=>setHov(id)}
+                  onMouseLeave={()=>setHov(null)}>
+                  <rect width={NODE_W} height={NODE_H} rx={6}
+                    fill={C.panel}
+                    stroke={hi?n.color:C.border}
+                    strokeWidth={hi?2:1}
+                    style={{transition:"stroke 0.15s"}}/>
+                  <rect width={4} height={NODE_H} rx={2} fill={n.color}/>
+                  <text x={14} y={20} fill={n.color} fontSize={10} fontWeight="700"
+                    fontFamily="'IBM Plex Mono',monospace" letterSpacing="0.03em">
+                    {n.label}
+                  </text>
+                  <text x={14} y={36} fill={C.muted} fontSize={8.5}
+                    fontFamily="'IBM Plex Mono',monospace">
+                    {n.sub}
+                  </text>
+                </g>
+              );
+            })}
+
+            {/* Legend */}
+            <g transform={`translate(14,${SVG_H-72})`}>
+              <rect width={264} height={62} rx={6} fill={C.panel} stroke={C.border}/>
+              {LEGEND.map((l,i) => {
+                const s = ESTYLES[l.style];
+                const col = i%2, row = Math.floor(i/2);
+                return (
+                  <g key={l.style} transform={`translate(${12+col*128},${16+row*22})`}>
+                    <line x1={0} y1={0} x2={22} y2={0}
+                      stroke={s.stroke} strokeWidth={1.5} strokeDasharray={s.dash}/>
+                    <text x={28} y={4} fill={C.muted} fontSize={8.5}
+                      fontFamily="'IBM Plex Mono',monospace">{l.label}</text>
+                  </g>
+                );
+              })}
+            </g>
+          </svg>
+        </div>
+      );
+    }
+
+    // ── Code files ──────────────────────────────────────────────────────────
+    const FILES = [
+      { id:"jetson", label:"Jetson · AI Pipeline", filename:"ranchhand_jetson.py", lang:"python", code:
+`#!/usr/bin/env python3
+"""
+ranchhand_jetson.py  —  Run on the Jetson Orin NX
+Pulls RTSP streams, runs YOLOv8 detection, fires alerts to RPi5.
+
+Requirements:
+  pip install ultralytics opencv-python-headless
+"""
+
+import cv2, json, socket, time, threading
+from datetime import datetime
+from ultralytics import YOLO
+
+CAMERA_STREAMS = [
+    "rtsp://admin:password@192.168.1.101/stream0",  # Pasture
+    "rtsp://admin:password@192.168.1.102/stream0",  # Perimeter
+    "rtsp://admin:password@192.168.1.103/stream0",  # Gate
+    "rtsp://admin:password@192.168.1.104/stream0",  # Pen
+]
+
+RPI_HOST       = "192.168.1.10"
+RPI_PORT       = 9001
+MODEL_PATH     = "ranchhand_v1.pt"
+CONFIDENCE     = 0.45
+ALERT_COOLDOWN = 30   # seconds between repeat alerts per camera
+
+ALERT_CLASSES = {
+    "coyote":       "PREDATOR",
+    "dog_unknown":  "PREDATOR",
+    "cow_down":     "HEALTH",
+    "cow_limping":  "HEALTH",
+    "fence_breach": "FENCE",
+}
+
+last_alert: dict[str, float] = {}
+model = YOLO(MODEL_PATH)
+
+def send_alert(payload: dict):
+    try:
+        with socket.create_connection((RPI_HOST, RPI_PORT), timeout=3) as s:
+            s.sendall((json.dumps(payload) + "\\n").encode())
+    except Exception as e:
+        print(f"[WARN] Could not reach RPi5: {e}")
+
+def process_stream(cam_index: int, url: str):
+    cap    = cv2.VideoCapture(url)
+    cam_id = f"cam_{cam_index + 1}"
+    print(f"[{cam_id}] Stream opened")
+
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            print(f"[{cam_id}] Stream lost — retrying in 5s")
+            time.sleep(5)
+            cap = cv2.VideoCapture(url)
+            continue
+
+        results = model(frame, conf=CONFIDENCE, verbose=False)
+
+        for r in results:
+            for box in r.boxes:
+                cls = model.names[int(box.cls)]
+                if cls not in ALERT_CLASSES:
+                    continue
+                key = f"{cam_id}_{cls}"
+                now = time.time()
+                if now - last_alert.get(key, 0) < ALERT_COOLDOWN:
+                    continue
+                last_alert[key] = now
+                payload = {
+                    "ts":         datetime.utcnow().isoformat(),
+                    "camera":     cam_id,
+                    "type":       ALERT_CLASSES[cls],
+                    "class":      cls,
+                    "confidence": round(float(box.conf), 3),
+                    "bbox":       box.xyxy[0].tolist(),
+                }
+                print(f"[ALERT] {payload}")
+                send_alert(payload)
+
+def main():
+    threads = [
+        threading.Thread(target=process_stream, args=(i, url), daemon=True)
+        for i, url in enumerate(CAMERA_STREAMS)
+    ]
+    for t in threads:
+        t.start()
+    print("[JETSON] All camera threads running.")
+    for t in threads:
+        t.join()
+
+if __name__ == "__main__":
+    main()
+`},
+      { id:"rpi", label:"RPi5 · Alert Hub", filename:"ranchhand_rpi.py", lang:"python", code:
+`#!/usr/bin/env python3
+"""
+ranchhand_rpi.py  —  Run on the Raspberry Pi 5
+Receives Jetson alerts, sends SMS, logs to SQLite, reads sensors,
+and serves a JSON status API.
+
+Requirements:
+  pip install twilio flask smbus2 RPi.GPIO bme280
+"""
+
+import json, socket, sqlite3, threading, time
+from datetime import datetime
+from flask import Flask, jsonify
+from twilio.rest import Client
+import smbus2, bme280
+import RPi.GPIO as GPIO
+
+LISTEN_HOST  = "0.0.0.0"
+LISTEN_PORT  = 9001
+TWILIO_SID   = "ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+TWILIO_TOKEN = "your_auth_token"
+TWILIO_FROM  = "+15551234567"
+ALERT_TO     = "+19185559999"
+DB_PATH      = "/home/pi/ranchhand.db"
+PIR_PIN_1    = 17
+PIR_PIN_2    = 27
+BME280_ADDR  = 0x76
+
+twilio_client = Client(TWILIO_SID, TWILIO_TOKEN)
+bus           = smbus2.SMBus(1)
+
+# ── Database ────────────────────────────────────────────────────────────────
+def init_db():
+    conn = sqlite3.connect(DB_PATH)
+    conn.execute("""CREATE TABLE IF NOT EXISTS events (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        ts TEXT, camera TEXT, type TEXT,
+        class TEXT, confidence REAL, notified INTEGER DEFAULT 0
+    )""")
+    conn.execute("""CREATE TABLE IF NOT EXISTS sensor_readings (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        ts TEXT, temp_c REAL, humidity REAL, pressure_pa REAL
+    )""")
+    conn.commit(); conn.close()
+
+def log_event(ev: dict, notified: bool):
+    conn = sqlite3.connect(DB_PATH)
+    conn.execute(
+        "INSERT INTO events (ts,camera,type,class,confidence,notified) VALUES (?,?,?,?,?,?)",
+        (ev["ts"],ev["camera"],ev["type"],ev["class"],ev["confidence"],int(notified))
+    )
+    conn.commit(); conn.close()
+
+# ── SMS ─────────────────────────────────────────────────────────────────────
+SMS = {
+    "PREDATOR": "RANCHHAND ALERT: Predator detected on {camera} at {ts}. Check app.",
+    "HEALTH":   "RANCHHAND: Distressed animal on {camera}. Confidence: {conf}%.",
+    "FENCE":    "RANCHHAND: Possible fence breach on {camera} at {ts}.",
+}
+
+def send_sms(ev: dict):
+    tpl = SMS.get(ev["type"])
+    if not tpl: return
+    body = tpl.format(
+        camera=ev["camera"],
+        ts=ev["ts"][:19].replace("T"," "),
+        conf=int(ev["confidence"]*100),
+    )
+    try:
+        twilio_client.messages.create(to=ALERT_TO, from_=TWILIO_FROM, body=body)
+        print(f"[SMS] {body}")
+    except Exception as e:
+        print(f"[SMS ERROR] {e}")
+
+# ── Alert listener ───────────────────────────────────────────────────────────
+def alert_listener():
+    srv = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    srv.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    srv.bind((LISTEN_HOST, LISTEN_PORT))
+    srv.listen(5)
+    print(f"[RPI] Listening on port {LISTEN_PORT}")
+    while True:
+        conn, _ = srv.accept()
+        with conn:
+            data = conn.recv(4096).decode().strip()
+            if not data: continue
+            try:
+                ev     = json.loads(data)
+                notify = ev["type"] in ("PREDATOR","HEALTH","FENCE")
+                if notify:
+                    threading.Thread(target=send_sms,args=(ev,),daemon=True).start()
+                log_event(ev, notify)
+            except json.JSONDecodeError:
+                pass
+
+# ── Sensors ──────────────────────────────────────────────────────────────────
+def sensor_loop():
+    while True:
+        try:
+            calibration = bme280.load_calibration_params(bus, BME280_ADDR)
+            data        = bme280.sample(bus, BME280_ADDR, calibration)
+            conn        = sqlite3.connect(DB_PATH)
+            conn.execute(
+                "INSERT INTO sensor_readings (ts,temp_c,humidity,pressure_pa) VALUES (?,?,?,?)",
+                (datetime.utcnow().isoformat(),
+                 round(data.temperature,1),
+                 round(data.humidity,1),
+                 round(data.pressure,1))
+            )
+            conn.commit(); conn.close()
+        except Exception as e:
+            print(f"[SENSOR] {e}")
+        time.sleep(300)
+
+def setup_pir():
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(PIR_PIN_1, GPIO.IN)
+    GPIO.setup(PIR_PIN_2, GPIO.IN)
+    def cb(ch):
+        zone = "North" if ch==PIR_PIN_1 else "South"
+        ev = {"ts":datetime.utcnow().isoformat(),"camera":f"PIR_{zone}",
+              "type":"PERIMETER","class":"motion","confidence":1.0}
+        log_event(ev, False)
+    GPIO.add_event_detect(PIR_PIN_1, GPIO.RISING, callback=cb, bouncetime=3000)
+    GPIO.add_event_detect(PIR_PIN_2, GPIO.RISING, callback=cb, bouncetime=3000)
+
+# ── Flask API ────────────────────────────────────────────────────────────────
+app = Flask(__name__)
+
+@app.route("/api/events")
+def get_events():
+    conn = sqlite3.connect(DB_PATH)
+    rows = conn.execute(
+        "SELECT ts,camera,type,class,confidence FROM events ORDER BY id DESC LIMIT 50"
+    ).fetchall()
+    conn.close()
+    return jsonify([{"ts":r[0],"camera":r[1],"type":r[2],"class":r[3],"confidence":r[4]} for r in rows])
+
+@app.route("/api/sensors/latest")
+def get_sensor():
+    conn = sqlite3.connect(DB_PATH)
+    row  = conn.execute(
+        "SELECT ts,temp_c,humidity,pressure_pa FROM sensor_readings ORDER BY id DESC LIMIT 1"
+    ).fetchone()
+    conn.close()
+    if not row: return jsonify({"error":"no data"})
+    return jsonify({"ts":row[0],"temp_c":row[1],"humidity":row[2],"pressure_pa":row[3]})
+
+@app.route("/api/status")
+def status():
+    return jsonify({"status":"online","ts":datetime.utcnow().isoformat()})
+
+if __name__ == "__main__":
+    init_db()
+    setup_pir()
+    threading.Thread(target=alert_listener, daemon=True).start()
+    threading.Thread(target=sensor_loop,    daemon=True).start()
+    print("[RPI] RanchHand hub running.")
+    app.run(host="0.0.0.0", port=8080)
+`},
+      { id:"systemd", label:"systemd Services", filename:"setup.sh", lang:"bash", code:
+`#!/bin/bash
+# setup.sh  —  Run once on each board to configure auto-start + static IPs
+
+# ── Jetson service ────────────────────────────────────────────────────────────
+sudo tee /etc/systemd/system/ranchhand-jetson.service > /dev/null <<EOF
+[Unit]
+Description=RanchHand AI Detection Pipeline
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /opt/ranchhand/ranchhand_jetson.py
+WorkingDirectory=/opt/ranchhand
+Restart=always
+RestartSec=10
+User=ranchhand
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# ── RPi5 service ──────────────────────────────────────────────────────────────
+sudo tee /etc/systemd/system/ranchhand-hub.service > /dev/null <<EOF
+[Unit]
+Description=RanchHand Alert Hub
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /opt/ranchhand/ranchhand_rpi.py
+WorkingDirectory=/opt/ranchhand
+Restart=always
+RestartSec=10
+User=pi
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# ── Enable and start ──────────────────────────────────────────────────────────
+sudo systemctl daemon-reload
+sudo systemctl enable ranchhand-jetson ranchhand-hub
+sudo systemctl start  ranchhand-jetson ranchhand-hub
+
+# ── Live logs ─────────────────────────────────────────────────────────────────
+# journalctl -u ranchhand-jetson -f
+# journalctl -u ranchhand-hub -f
+
+# ── Static IP: Jetson (/etc/netplan/01-netcfg.yaml) ──────────────────────────
+# network:
+#   version: 2
+#   ethernets:
+#     eth0:
+#       dhcp4: no
+#       addresses: [192.168.1.20/24]
+#       gateway4: 192.168.1.1
+
+# ── Static IP: RPi5 (/etc/dhcpcd.conf) ───────────────────────────────────────
+# interface eth0
+# static ip_address=192.168.1.10/24
+# static routers=192.168.1.1
+
+# ── Camera IPs (set via each camera's web UI) ─────────────────────────────────
+# cam1 -> 192.168.1.101
+# cam2 -> 192.168.1.102
+# cam3 -> 192.168.1.103
+# cam4 -> 192.168.1.104
+`},
+      { id:"train", label:"Model Fine-Tuning", filename:"train_ranchhand.py", lang:"python", code:
+`#!/usr/bin/env python3
+"""
+train_ranchhand.py
+Fine-tune YOLOv8 on livestock/predator data from Roboflow.
+Run on a GPU workstation or Google Colab, then copy best.pt to the Jetson.
+
+Requirements:
+  pip install ultralytics roboflow
+"""
+
+from roboflow import Roboflow
+from ultralytics import YOLO
+
+# ── Step 1: Download dataset from Roboflow Universe ──────────────────────────
+# Search roboflow.com/universe for: "cattle detection", "coyote detection"
+rf      = Roboflow(api_key="YOUR_ROBOFLOW_API_KEY")
+project = rf.workspace("livestock-ai").project("cattle-detection")
+dataset = project.version(3).download("yolov8")
+
+# ── Step 2: Fine-tune from YOLOv8m pretrained weights ───────────────────────
+model   = YOLO("yolov8m.pt")
+
+results = model.train(
+    data    = f"{dataset.location}/data.yaml",
+    epochs  = 80,
+    imgsz   = 640,
+    batch   = 16,
+    name    = "ranchhand_v1",
+    patience= 20,
+    augment = True,
+    degrees = 15.0,   # Rotation aug for varied pasture angles
+    fliplr  = 0.5,
+    mosaic  = 1.0,
+    device  = 0,      # GPU 0
+)
+print("Best weights:", results.save_dir)
+
+# ── Step 3: Validate ─────────────────────────────────────────────────────────
+metrics = model.val()
+print(f"mAP50:    {metrics.box.map50:.3f}")
+print(f"mAP50-95: {metrics.box.map:.3f}")
+
+# ── Step 4: Export to TensorRT on the Jetson ────────────────────────────────
+# Run this ON the Jetson for a device-specific engine:
+#
+# model = YOLO("runs/detect/ranchhand_v1/weights/best.pt")
+# model.export(format="engine", half=True, device=0)
+# model = YOLO("best.engine")   # Load the TRT engine
+
+# ── Target classes (define in your dataset's data.yaml) ─────────────────────
+# names:
+#   0: cow_healthy
+#   1: cow_down
+#   2: cow_limping
+#   3: coyote
+#   4: dog_unknown
+#   5: fence_breach
+#   6: cattle_group
+#
+# Aim for 300+ labeled images per class minimum.
+# Use Roboflow's annotation tool for fast labeling.
+`},
+    ];
+
+    function hl(code, lang) {
+      let out = code
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;");
+      if (lang==="bash") {
+        out = out
+          .replace(/(#[^\n]*)/g,`<span style="color:${C.muted}">$1</span>`)
+          .replace(/("([^"\\]|\\.)*")/g,`<span style="color:${C.amber}">$1</span>`)
+          .replace(/\b(sudo|systemctl|tee|journalctl|bash|echo)\b/g,`<span style="color:${C.blue}">$1</span>`);
+      } else {
+        out = out
+          .replace(/(#[^\n]*)/g,`<span style="color:${C.muted};font-style:italic">$1</span>`)
+          .replace(/("""[\s\S]*?""")/g,`<span style="color:${C.muted};font-style:italic">$1</span>`)
+          .replace(/\b(import|from|def|class|if|else|elif|while|for|return|True|False|None|in|not|and|or|with|as|try|except|raise|pass|break|continue|lambda|yield|async|await)\b/g,
+            `<span style="color:${C.purple}">$1</span>`)
+          .replace(/("([^"\\]|\\.)*"|'([^'\\]|\\.)*')/g,`<span style="color:${C.amber}">$1</span>`)
+          .replace(/\b(\d+\.?\d*)\b/g,`<span style="color:${C.red}">$1</span>`);
+      }
+      return out;
+    }
+
+    const CARDS = [
+      { label:"AI Inference",   items:["Jetson Orin NX 16GB"],               color:C.green  },
+      { label:"Orchestration",  items:["Raspberry Pi 5 8GB"],                 color:C.green  },
+      { label:"Vision",         items:["4x 4K PoE Cameras","PoE Switch"],     color:C.blue   },
+      { label:"Power",          items:["100W Solar","100Ah LiFePO4","MPPT + Buck Conv."], color:C.amber  },
+      { label:"Connectivity",   items:["SIM7600G LTE HAT","Twilio SMS"],      color:C.purple },
+      { label:"Sensors",        items:["BME280 Temp/Humidity","PIR Motion x2"], color:C.red  },
+    ];
+
+    function App() {
+      const [tab,     setTab]     = useState("diagram");
+      const [codeTab, setCodeTab] = useState("jetson");
+      const [copied,  setCopied]  = useState(false);
+
+      const cf = FILES.find(f => f.id === codeTab);
+
+      function copy() {
+        navigator.clipboard.writeText(cf.code);
+        setCopied(true);
+        setTimeout(()=>setCopied(false), 1800);
+      }
+
+      return (
+        <div style={{background:C.bg, minHeight:"100vh", color:C.text, paddingBottom:48}}>
+
+          {/* Header */}
+          <div style={{
+            borderBottom:`1px solid ${C.border}`, padding:"16px 28px",
+            display:"flex", alignItems:"center", gap:14,
+            position:"sticky", top:0, background:C.bg, zIndex:10,
+          }}>
+            <div style={{
+              width:34, height:34, borderRadius:7, background:C.green,
+              display:"flex", alignItems:"center", justifyContent:"center", fontSize:18,
+            }}>🐄</div>
+            <div>
+              <div style={{fontWeight:700, fontSize:13, color:C.white, letterSpacing:"0.06em"}}>
+                RANCHHAND AI
+              </div>
+              <div style={{fontSize:9.5, color:C.muted}}>System Architecture &amp; Starter Code</div>
+            </div>
+            <div style={{marginLeft:"auto", display:"flex", gap:6}}>
+              {[{id:"diagram",label:"Diagram"},{id:"code",label:"Code"}].map(t => (
+                <button key={t.id} className={`tab-btn${tab===t.id?" active":""}`}
+                  onClick={()=>setTab(t.id)}>{t.label}</button>
+              ))}
+            </div>
+          </div>
+
+          {/* Diagram tab */}
+          {tab==="diagram" && (
+            <div style={{padding:"22px 20px 0"}}>
+              <div style={{fontSize:9.5, color:C.muted, marginBottom:10}}>
+                Hover any node to highlight its connections
+              </div>
+              <div style={{
+                border:`1px solid ${C.border}`, borderRadius:8,
+                background:C.panel, overflow:"hidden",
+              }}>
+                <Diagram/>
+              </div>
+
+              {/* Component cards */}
+              <div style={{
+                display:"grid",
+                gridTemplateColumns:"repeat(auto-fill, minmax(190px, 1fr))",
+                gap:8, marginTop:14,
+              }}>
+                {CARDS.map(g => (
+                  <div key={g.label} style={{
+                    border:`1px solid ${C.border}`, borderRadius:6,
+                    padding:"10px 12px", background:C.panel,
+                  }}>
+                    <div style={{
+                      fontSize:9, fontWeight:700, color:g.color,
+                      letterSpacing:"0.07em", marginBottom:6,
+                    }}>{g.label}</div>
+                    {g.items.map(it => (
+                      <div key={it} style={{fontSize:9, color:C.muted, lineHeight:1.8}}>
+                        · {it}
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Code tab */}
+          {tab==="code" && (
+            <div style={{padding:"20px 20px 0"}}>
+              <div style={{display:"flex", gap:4, marginBottom:10, flexWrap:"wrap", alignItems:"center"}}>
+                {FILES.map(f => (
+                  <button key={f.id}
+                    className={`code-tab-btn${codeTab===f.id?" active":""}`}
+                    onClick={()=>setCodeTab(f.id)}>{f.label}</button>
+                ))}
+                <button className={`copy-btn${copied?" copied":""}`} onClick={copy}>
+                  {copied?"✓ Copied":"Copy"}
+                </button>
+              </div>
+
+              <div style={{
+                border:`1px solid ${C.border}`, borderRadius:8,
+                background:C.codeBg, overflow:"hidden",
+              }}>
+                {/* Fake titlebar */}
+                <div style={{
+                  padding:"8px 14px", borderBottom:`1px solid ${C.border}`,
+                  display:"flex", alignItems:"center", gap:7,
+                }}>
+                  {[C.red, C.amber, C.green].map(c => (
+                    <div key={c} style={{width:9,height:9,borderRadius:"50%",background:c}}/>
+                  ))}
+                  <span style={{fontSize:9, color:C.muted, marginLeft:6}}>{cf.filename}</span>
+                </div>
+                <pre dangerouslySetInnerHTML={{__html: hl(cf.code, cf.lang)}}/>
+              </div>
+
+              <div style={{marginTop:8, fontSize:9, color:C.muted}}>
+                {cf.id==="jetson"  && "Run on Jetson Orin NX · Requires JetPack 6 + ultralytics"}
+                {cf.id==="rpi"     && "Run on Raspberry Pi 5 · pip install twilio flask smbus2 RPi.GPIO bme280"}
+                {cf.id==="systemd" && "Run once per board to configure auto-start on boot + static IPs"}
+                {cf.id==="train"   && "Run on GPU workstation or Google Colab · copy best.pt to Jetson after training"}
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+  </script>
+</body>
+</html>
