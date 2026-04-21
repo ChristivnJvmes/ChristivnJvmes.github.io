@@ -8,246 +8,219 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { height: 100%; background: #0C1008; }
-    body { font-family: 'IBM Plex Mono', monospace; color: #D4E8B0; }
+    html, body { height: 100%; background: #1a1a1a; }
+    body { font-family: 'Inter', sans-serif; color: #e8e8e8; }
 
     ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: #0C1008; }
-    ::-webkit-scrollbar-thumb { background: #2A3520; border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: #4A7A28; }
+    ::-webkit-scrollbar-track { background: #1a1a1a; }
+    ::-webkit-scrollbar-thumb { background: #3d3d3d; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #555; }
 
-    button { font-family: 'IBM Plex Mono', monospace; }
+    button { font-family: 'Inter', sans-serif; }
 
     .tab-btn {
-      background: transparent;
-      border-radius: 4px;
-      padding: 5px 14px;
-      font-size: 11px;
-      cursor: pointer;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      transition: all 0.15s;
-      border: 1px solid #2A3520;
-      color: #6B7E58;
+      background: transparent; border-radius: 6px; padding: 6px 16px;
+      font-size: 12px; cursor: pointer; font-weight: 500;
+      transition: all 0.15s; border: 1px solid #3d3d3d; color: #909090;
     }
-    .tab-btn.active {
-      background: #7EC845;
-      color: #0C1008;
-      border-color: #7EC845;
-    }
+    .tab-btn.active { background: #2f2f2f; color: #e8e8e8; border-color: #555; }
+    .tab-btn:hover:not(.active) { border-color: #555; color: #c0c0c0; }
+
     .code-tab-btn {
-      background: transparent;
-      border-radius: 4px;
-      padding: 5px 12px;
-      font-size: 10px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.15s;
-      border: 1px solid #2A3520;
-      color: #6B7E58;
-      font-family: 'IBM Plex Mono', monospace;
+      background: transparent; border-radius: 5px; padding: 5px 12px;
+      font-size: 11px; cursor: pointer; font-weight: 500;
+      transition: all 0.15s; border: 1px solid #3d3d3d; color: #909090;
+      font-family: 'Inter', sans-serif;
     }
-    .code-tab-btn.active {
-      background: #4A7A28;
-      color: #F0F4E8;
-      border-color: #7EC845;
-    }
+    .code-tab-btn.active { background: #2f2f2f; color: #e8e8e8; border-color: #555; }
+    .code-tab-btn:hover:not(.active) { color: #c0c0c0; border-color: #4a4a4a; }
+
     .copy-btn {
-      background: transparent;
-      border-radius: 4px;
-      padding: 5px 14px;
-      font-size: 10px;
-      cursor: pointer;
-      transition: all 0.2s;
-      border: 1px solid #2A3520;
-      color: #6B7E58;
-      font-family: 'IBM Plex Mono', monospace;
-      margin-left: auto;
+      background: transparent; border-radius: 5px; padding: 5px 14px;
+      font-size: 11px; cursor: pointer; transition: all 0.2s;
+      border: 1px solid #3d3d3d; color: #909090;
+      font-family: 'Inter', sans-serif; margin-left: auto;
     }
-    .copy-btn.copied {
-      color: #7EC845;
-      border-color: #7EC845;
-    }
+    .copy-btn.copied { color: #60a5fa; border-color: #60a5fa; }
+    .copy-btn:hover:not(.copied) { color: #c0c0c0; border-color: #555; }
+
     pre {
-      margin: 0;
-      padding: 16px 18px;
-      font-size: 10.5px;
-      line-height: 1.7;
-      color: #D4E8B0;
-      overflow-x: auto;
-      max-height: 520px;
-      overflow-y: auto;
-      white-space: pre;
+      margin: 0; padding: 18px 20px;
+      font-size: 12px; line-height: 1.75; color: #d4d4d4;
+      overflow-x: auto; max-height: 540px; overflow-y: auto;
+      white-space: pre; font-family: 'JetBrains Mono', monospace;
     }
-    .node-group { cursor: pointer; }
-    .node-group:hover rect.node-bg { stroke: var(--node-color); stroke-width: 2; }
   </style>
 </head>
 <body>
   <div id="root"></div>
-
   <script type="text/babel">
     const { useState } = React;
 
     const C = {
-      bg:      "#0C1008",
-      panel:   "#13180E",
-      border:  "#2A3520",
-      green:   "#7EC845",
-      greenDim:"#4A7A28",
-      amber:   "#F5A623",
-      blue:    "#4A9EFF",
-      purple:  "#A78BFA",
-      red:     "#F87171",
-      text:    "#D4E8B0",
-      muted:   "#6B7E58",
-      white:   "#F0F4E8",
-      codeBg:  "#0A0F07",
+      bg:"#1a1a1a", panel:"#242424", panelAlt:"#2a2a2a",
+      border:"#383838", borderMd:"#444",
+      text:"#e8e8e8", textMd:"#b0b0b0", muted:"#686868",
+      power:"#d97706", poe:"#3b82f6", data:"#10b981", wireless:"#8b5cf6",
+      amber:"#d97706", blue:"#3b82f6", emerald:"#10b981",
+      violet:"#8b5cf6", rose:"#f43f5e",
+      codeBg:"#141414", headerBg:"#1f1f1f",
     };
 
-    const NODE_W = 130, NODE_H = 54;
-    const SVG_W = 860,  SVG_H = 620;
+    const NODE_W=138, NODE_H=52, SVG_W=880, SVG_H=560;
 
     const NODES = {
-      solar:   { label:"Solar Panel",       sub:"100W Mono",          color:C.amber,  x:60,  y:60  },
-      mppt:    { label:"MPPT Controller",   sub:"30A Renogy",          color:C.amber,  x:60,  y:190 },
-      battery: { label:"LiFePO4 Battery",   sub:"100Ah",               color:C.amber,  x:60,  y:320 },
-      buck19:  { label:"DC-DC Converter",   sub:"12V → 19V",           color:C.amber,  x:60,  y:450 },
-      jetson:  { label:"Jetson Orin NX",    sub:"16GB · AI Inference",  color:C.green,  x:310, y:270 },
-      rpi:     { label:"Raspberry Pi 5",    sub:"8GB · Orchestration",  color:C.green,  x:560, y:270 },
-      poe:     { label:"PoE Switch",        sub:"8-Port TP-Link",       color:C.blue,   x:310, y:110 },
-      cam1:    { label:"Camera 1",          sub:"4K IR · Pasture",      color:C.blue,   x:130, y:530 },
-      cam2:    { label:"Camera 2",          sub:"4K IR · Perimeter",    color:C.blue,   x:270, y:530 },
-      cam3:    { label:"Camera 3",          sub:"4K IR · Gate",         color:C.blue,   x:410, y:530 },
-      cam4:    { label:"Camera 4",          sub:"4K IR · Pen",          color:C.blue,   x:550, y:530 },
-      lte:     { label:"LTE HAT",           sub:"SIM7600G-H",           color:C.purple, x:700, y:190 },
-      cloud:   { label:"Cloud / Alerts",    sub:"Twilio · Dashboard",   color:C.purple, x:700, y:350 },
-      sensors: { label:"Sensors",           sub:"BME280 · PIR",         color:C.red,    x:700, y:110 },
+      solar:   {label:"Solar Panel",      sub:"100W Mono",           color:C.amber,   x:50,  y:50 },
+      mppt:    {label:"MPPT Controller",  sub:"30A Renogy",           color:C.amber,   x:50,  y:170},
+      battery: {label:"LiFePO4 Battery",  sub:"100Ah",                color:C.amber,   x:50,  y:290},
+      buck19:  {label:"DC-DC Converter",  sub:"12V → 19V",            color:C.amber,   x:50,  y:410},
+      jetson:  {label:"Jetson Orin NX",   sub:"16GB · AI Inference",  color:C.emerald, x:310, y:240},
+      rpi:     {label:"Raspberry Pi 5",   sub:"8GB · Orchestration",  color:C.emerald, x:560, y:240},
+      poe:     {label:"PoE Switch",       sub:"8-Port TP-Link",       color:C.blue,    x:310, y:90 },
+      cam1:    {label:"Camera 1",         sub:"4K IR · Pasture",      color:C.blue,    x:100, y:480},
+      cam2:    {label:"Camera 2",         sub:"4K IR · Perimeter",    color:C.blue,    x:250, y:480},
+      cam3:    {label:"Camera 3",         sub:"4K IR · Gate",         color:C.blue,    x:400, y:480},
+      cam4:    {label:"Camera 4",         sub:"4K IR · Pen",          color:C.blue,    x:550, y:480},
+      lte:     {label:"LTE HAT",          sub:"SIM7600G-H",           color:C.violet,  x:710, y:160},
+      cloud:   {label:"Cloud / Alerts",   sub:"Twilio · Dashboard",   color:C.violet,  x:710, y:310},
+      sensors: {label:"Sensors",          sub:"BME280 · PIR",         color:C.rose,    x:710, y:50 },
     };
 
     const EDGES = [
-      { from:"solar",   to:"mppt",    style:"power"   },
-      { from:"mppt",    to:"battery", style:"power"   },
-      { from:"battery", to:"buck19",  style:"power"   },
-      { from:"buck19",  to:"jetson",  style:"power"   },
-      { from:"battery", to:"rpi",     style:"power"   },
-      { from:"battery", to:"poe",     style:"power"   },
-      { from:"poe",     to:"cam1",    style:"poe"     },
-      { from:"poe",     to:"cam2",    style:"poe"     },
-      { from:"poe",     to:"cam3",    style:"poe"     },
-      { from:"poe",     to:"cam4",    style:"poe"     },
-      { from:"poe",     to:"jetson",  style:"data"    },
-      { from:"jetson",  to:"rpi",     style:"data"    },
-      { from:"rpi",     to:"lte",     style:"data"    },
-      { from:"lte",     to:"cloud",   style:"wireless"},
-      { from:"rpi",     to:"sensors", style:"data"    },
+      {from:"solar",   to:"mppt",    style:"power"},
+      {from:"mppt",    to:"battery", style:"power"},
+      {from:"battery", to:"buck19",  style:"power"},
+      {from:"buck19",  to:"jetson",  style:"power"},
+      {from:"battery", to:"rpi",     style:"power"},
+      {from:"battery", to:"poe",     style:"power"},
+      {from:"poe",     to:"cam1",    style:"poe"},
+      {from:"poe",     to:"cam2",    style:"poe"},
+      {from:"poe",     to:"cam3",    style:"poe"},
+      {from:"poe",     to:"cam4",    style:"poe"},
+      {from:"poe",     to:"jetson",  style:"data"},
+      {from:"jetson",  to:"rpi",     style:"data"},
+      {from:"rpi",     to:"lte",     style:"data"},
+      {from:"lte",     to:"cloud",   style:"wireless"},
+      {from:"rpi",     to:"sensors", style:"data"},
     ];
 
     const ESTYLES = {
-      power:    { stroke:C.amber,  dash:"none", w:2   },
-      poe:      { stroke:C.blue,   dash:"none", w:1.5 },
-      data:     { stroke:C.green,  dash:"5,4",  w:1.5 },
-      wireless: { stroke:C.purple, dash:"3,5",  w:1.5 },
+      power:    {stroke:C.power,    dash:"none", w:2},
+      poe:      {stroke:C.poe,      dash:"none", w:1.5},
+      data:     {stroke:C.data,     dash:"6,4",  w:1.5},
+      wireless: {stroke:C.wireless, dash:"3,5",  w:1.5},
     };
 
     const LEGEND = [
-      { style:"power",    label:"DC Power"          },
-      { style:"poe",      label:"PoE (Power+Data)"  },
-      { style:"data",     label:"Data / GPIO"       },
-      { style:"wireless", label:"4G LTE Wireless"   },
+      {style:"power",    label:"DC Power"},
+      {style:"poe",      label:"PoE (Power + Data)"},
+      {style:"data",     label:"Data / GPIO"},
+      {style:"wireless", label:"4G LTE Wireless"},
     ];
 
-    function cx(id){ return NODES[id].x + NODE_W/2; }
-    function cy(id){ return NODES[id].y + NODE_H/2; }
-    function path(f,t){
+    function cx(id){return NODES[id].x+NODE_W/2;}
+    function cy(id){return NODES[id].y+NODE_H/2;}
+    function edgePath(f,t){
       const x1=cx(f),y1=cy(f),x2=cx(t),y2=cy(t),mx=(x1+x2)/2;
       return `M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`;
     }
 
-    function Diagram() {
+    function Diagram(){
       const [hov, setHov] = useState(null);
       return (
-        <div style={{overflowX:"auto",padding:"8px 0"}}>
-          <svg width={SVG_W} height={SVG_H} viewBox={`0 0 ${SVG_W} ${SVG_H}`}
-            style={{display:"block",margin:"0 auto"}}>
-            <defs>
-              <pattern id="dots" width="30" height="30" patternUnits="userSpaceOnUse">
-                <circle cx="1" cy="1" r="0.8" fill={C.border}/>
-              </pattern>
-              {Object.entries(ESTYLES).map(([k,s]) => (
-                <marker key={k} id={`arr-${k}`} markerWidth="8" markerHeight="8"
-                  refX="6" refY="3" orient="auto">
-                  <path d="M0,0 L0,6 L8,3 z" fill={s.stroke} opacity="0.8"/>
-                </marker>
-              ))}
-            </defs>
-            <rect width={SVG_W} height={SVG_H} fill="url(#dots)"/>
-
-            {EDGES.map((e,i) => {
-              const s = ESTYLES[e.style];
-              const hi = hov===e.from||hov===e.to;
-              return (
-                <path key={i} d={path(e.from,e.to)} fill="none"
-                  stroke={s.stroke} strokeWidth={hi?s.w+1:s.w}
-                  strokeDasharray={s.dash}
-                  opacity={hov&&!hi?0.15:0.75}
-                  markerEnd={`url(#arr-${e.style})`}
-                  style={{transition:"opacity 0.2s"}}/>
-              );
-            })}
-
-            {Object.entries(NODES).map(([id,n]) => {
-              const hi = hov===id;
-              return (
-                <g key={id} transform={`translate(${n.x},${n.y})`}
-                  style={{cursor:"pointer"}}
-                  onMouseEnter={()=>setHov(id)}
-                  onMouseLeave={()=>setHov(null)}>
-                  <rect width={NODE_W} height={NODE_H} rx={6}
-                    fill={C.panel}
-                    stroke={hi?n.color:C.border}
-                    strokeWidth={hi?2:1}
-                    style={{transition:"stroke 0.15s"}}/>
-                  <rect width={4} height={NODE_H} rx={2} fill={n.color}/>
-                  <text x={14} y={20} fill={n.color} fontSize={10} fontWeight="700"
-                    fontFamily="'IBM Plex Mono',monospace" letterSpacing="0.03em">
-                    {n.label}
-                  </text>
-                  <text x={14} y={36} fill={C.muted} fontSize={8.5}
-                    fontFamily="'IBM Plex Mono',monospace">
-                    {n.sub}
-                  </text>
-                </g>
-              );
-            })}
-
-            {/* Legend */}
-            <g transform={`translate(14,${SVG_H-72})`}>
-              <rect width={264} height={62} rx={6} fill={C.panel} stroke={C.border}/>
-              {LEGEND.map((l,i) => {
-                const s = ESTYLES[l.style];
-                const col = i%2, row = Math.floor(i/2);
-                return (
-                  <g key={l.style} transform={`translate(${12+col*128},${16+row*22})`}>
-                    <line x1={0} y1={0} x2={22} y2={0}
-                      stroke={s.stroke} strokeWidth={1.5} strokeDasharray={s.dash}/>
-                    <text x={28} y={4} fill={C.muted} fontSize={8.5}
-                      fontFamily="'IBM Plex Mono',monospace">{l.label}</text>
+        <div>
+          <div style={{overflowX:"auto"}}>
+            <svg width={SVG_W} height={SVG_H} viewBox={`0 0 ${SVG_W} ${SVG_H}`}
+              style={{display:"block",margin:"0 auto",fontFamily:"'Inter',sans-serif"}}>
+              <defs>
+                <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse">
+                  <circle cx="1" cy="1" r="0.75" fill={C.border} opacity="0.45"/>
+                </pattern>
+                {Object.entries(ESTYLES).map(([k,s])=>(
+                  <marker key={k} id={`arr-${k}`} markerWidth="7" markerHeight="7"
+                    refX="5" refY="3" orient="auto">
+                    <path d="M0,0 L0,6 L7,3 z" fill={s.stroke} opacity="0.9"/>
+                  </marker>
+                ))}
+              </defs>
+              <rect width={SVG_W} height={SVG_H} fill="url(#dots)"/>
+              {EDGES.map((e,i)=>{
+                const s=ESTYLES[e.style];
+                const hi=hov===e.from||hov===e.to;
+                return(
+                  <path key={i} d={edgePath(e.from,e.to)} fill="none"
+                    stroke={s.stroke} strokeWidth={hi?s.w+1:s.w}
+                    strokeDasharray={s.dash}
+                    opacity={hov&&!hi?0.1:hi?0.95:0.5}
+                    markerEnd={`url(#arr-${e.style})`}
+                    style={{transition:"opacity 0.18s"}}/>
+                );
+              })}
+              {Object.entries(NODES).map(([id,n])=>{
+                const hi=hov===id;
+                return(
+                  <g key={id} transform={`translate(${n.x},${n.y})`}
+                    style={{cursor:"pointer"}}
+                    onMouseEnter={()=>setHov(id)}
+                    onMouseLeave={()=>setHov(null)}>
+                    <rect width={NODE_W} height={NODE_H} rx={7}
+                      fill={C.panel}
+                      stroke={hi?n.color:C.border}
+                      strokeWidth={hi?1.5:1}
+                      style={{transition:"all 0.15s"}}/>
+                    <rect x={0} y={0} width={3} height={NODE_H} rx={1.5}
+                      fill={n.color} opacity={hi?1:0.65}/>
+                    <text x={14} y={23} fill={hi?C.text:C.textMd}
+                      fontSize={11.5} fontWeight="600"
+                      style={{transition:"fill 0.15s"}}>
+                      {n.label}
+                    </text>
+                    <text x={14} y={39} fill={C.muted} fontSize={10}>
+                      {n.sub}
+                    </text>
                   </g>
                 );
               })}
-            </g>
-          </svg>
+            </svg>
+          </div>
+
+          {/* Legend — HTML row beneath the SVG, zero overlap risk */}
+          <div style={{
+            display:"flex", alignItems:"center", flexWrap:"wrap", gap:24,
+            padding:"12px 20px",
+            borderTop:`1px solid ${C.border}`,
+            background:C.panelAlt,
+          }}>
+            <span style={{
+              fontSize:10, fontWeight:600, color:C.muted,
+              letterSpacing:"0.08em", textTransform:"uppercase",
+            }}>Connection Key</span>
+            {LEGEND.map(l=>{
+              const s=ESTYLES[l.style];
+              return(
+                <div key={l.style} style={{display:"flex",alignItems:"center",gap:8}}>
+                  <svg width={34} height={12} style={{flexShrink:0}}>
+                    <line x1={0} y1={6} x2={34} y2={6}
+                      stroke={s.stroke} strokeWidth={2}
+                      strokeDasharray={s.dash==="none"?undefined:s.dash}/>
+                    <polygon points="28,3 34,6 28,9" fill={s.stroke}/>
+                  </svg>
+                  <span style={{fontSize:11.5, color:C.textMd, whiteSpace:"nowrap"}}>
+                    {l.label}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
         </div>
       );
     }
 
-    // ── Code files ──────────────────────────────────────────────────────────
     const FILES = [
-      { id:"jetson", label:"Jetson · AI Pipeline", filename:"ranchhand_jetson.py", lang:"python", code:
+      {id:"jetson", label:"Jetson · AI Pipeline", filename:"ranchhand_jetson.py", lang:"python", code:
 `#!/usr/bin/env python3
 """
 ranchhand_jetson.py  —  Run on the Jetson Orin NX
@@ -333,16 +306,14 @@ def main():
         threading.Thread(target=process_stream, args=(i, url), daemon=True)
         for i, url in enumerate(CAMERA_STREAMS)
     ]
-    for t in threads:
-        t.start()
+    for t in threads: t.start()
     print("[JETSON] All camera threads running.")
-    for t in threads:
-        t.join()
+    for t in threads: t.join()
 
 if __name__ == "__main__":
     main()
 `},
-      { id:"rpi", label:"RPi5 · Alert Hub", filename:"ranchhand_rpi.py", lang:"python", code:
+      {id:"rpi", label:"RPi5 · Alert Hub", filename:"ranchhand_rpi.py", lang:"python", code:
 `#!/usr/bin/env python3
 """
 ranchhand_rpi.py  —  Run on the Raspberry Pi 5
@@ -374,7 +345,6 @@ BME280_ADDR  = 0x76
 twilio_client = Client(TWILIO_SID, TWILIO_TOKEN)
 bus           = smbus2.SMBus(1)
 
-# ── Database ────────────────────────────────────────────────────────────────
 def init_db():
     conn = sqlite3.connect(DB_PATH)
     conn.execute("""CREATE TABLE IF NOT EXISTS events (
@@ -396,7 +366,6 @@ def log_event(ev: dict, notified: bool):
     )
     conn.commit(); conn.close()
 
-# ── SMS ─────────────────────────────────────────────────────────────────────
 SMS = {
     "PREDATOR": "RANCHHAND ALERT: Predator detected on {camera} at {ts}. Check app.",
     "HEALTH":   "RANCHHAND: Distressed animal on {camera}. Confidence: {conf}%.",
@@ -417,7 +386,6 @@ def send_sms(ev: dict):
     except Exception as e:
         print(f"[SMS ERROR] {e}")
 
-# ── Alert listener ───────────────────────────────────────────────────────────
 def alert_listener():
     srv = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     srv.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -438,19 +406,16 @@ def alert_listener():
             except json.JSONDecodeError:
                 pass
 
-# ── Sensors ──────────────────────────────────────────────────────────────────
 def sensor_loop():
     while True:
         try:
-            calibration = bme280.load_calibration_params(bus, BME280_ADDR)
-            data        = bme280.sample(bus, BME280_ADDR, calibration)
-            conn        = sqlite3.connect(DB_PATH)
+            cal  = bme280.load_calibration_params(bus, BME280_ADDR)
+            data = bme280.sample(bus, BME280_ADDR, cal)
+            conn = sqlite3.connect(DB_PATH)
             conn.execute(
                 "INSERT INTO sensor_readings (ts,temp_c,humidity,pressure_pa) VALUES (?,?,?,?)",
                 (datetime.utcnow().isoformat(),
-                 round(data.temperature,1),
-                 round(data.humidity,1),
-                 round(data.pressure,1))
+                 round(data.temperature,1),round(data.humidity,1),round(data.pressure,1))
             )
             conn.commit(); conn.close()
         except Exception as e:
@@ -469,7 +434,6 @@ def setup_pir():
     GPIO.add_event_detect(PIR_PIN_1, GPIO.RISING, callback=cb, bouncetime=3000)
     GPIO.add_event_detect(PIR_PIN_2, GPIO.RISING, callback=cb, bouncetime=3000)
 
-# ── Flask API ────────────────────────────────────────────────────────────────
 app = Flask(__name__)
 
 @app.route("/api/events")
@@ -496,18 +460,17 @@ def status():
     return jsonify({"status":"online","ts":datetime.utcnow().isoformat()})
 
 if __name__ == "__main__":
-    init_db()
-    setup_pir()
+    init_db(); setup_pir()
     threading.Thread(target=alert_listener, daemon=True).start()
     threading.Thread(target=sensor_loop,    daemon=True).start()
     print("[RPI] RanchHand hub running.")
     app.run(host="0.0.0.0", port=8080)
 `},
-      { id:"systemd", label:"systemd Services", filename:"setup.sh", lang:"bash", code:
+      {id:"systemd", label:"systemd Services", filename:"setup.sh", lang:"bash", code:
 `#!/bin/bash
-# setup.sh  —  Run once on each board to configure auto-start + static IPs
+# setup.sh  —  Run once on each board
 
-# ── Jetson service ────────────────────────────────────────────────────────────
+# ── Jetson service ─────────────────────────────────────────────────────────
 sudo tee /etc/systemd/system/ranchhand-jetson.service > /dev/null <<EOF
 [Unit]
 Description=RanchHand AI Detection Pipeline
@@ -526,7 +489,7 @@ StandardError=journal
 WantedBy=multi-user.target
 EOF
 
-# ── RPi5 service ──────────────────────────────────────────────────────────────
+# ── RPi5 service ───────────────────────────────────────────────────────────
 sudo tee /etc/systemd/system/ranchhand-hub.service > /dev/null <<EOF
 [Unit]
 Description=RanchHand Alert Hub
@@ -545,16 +508,16 @@ StandardError=journal
 WantedBy=multi-user.target
 EOF
 
-# ── Enable and start ──────────────────────────────────────────────────────────
+# ── Enable and start ───────────────────────────────────────────────────────
 sudo systemctl daemon-reload
 sudo systemctl enable ranchhand-jetson ranchhand-hub
 sudo systemctl start  ranchhand-jetson ranchhand-hub
 
-# ── Live logs ─────────────────────────────────────────────────────────────────
+# Watch logs live:
 # journalctl -u ranchhand-jetson -f
 # journalctl -u ranchhand-hub -f
 
-# ── Static IP: Jetson (/etc/netplan/01-netcfg.yaml) ──────────────────────────
+# ── Static IP — Jetson (/etc/netplan/01-netcfg.yaml) ──────────────────────
 # network:
 #   version: 2
 #   ethernets:
@@ -563,18 +526,16 @@ sudo systemctl start  ranchhand-jetson ranchhand-hub
 #       addresses: [192.168.1.20/24]
 #       gateway4: 192.168.1.1
 
-# ── Static IP: RPi5 (/etc/dhcpcd.conf) ───────────────────────────────────────
+# ── Static IP — RPi5 (/etc/dhcpcd.conf) ───────────────────────────────────
 # interface eth0
 # static ip_address=192.168.1.10/24
 # static routers=192.168.1.1
 
-# ── Camera IPs (set via each camera's web UI) ─────────────────────────────────
-# cam1 -> 192.168.1.101
-# cam2 -> 192.168.1.102
-# cam3 -> 192.168.1.103
-# cam4 -> 192.168.1.104
+# ── Camera IPs (set via each camera's web UI) ─────────────────────────────
+# cam1 -> 192.168.1.101  cam2 -> 192.168.1.102
+# cam3 -> 192.168.1.103  cam4 -> 192.168.1.104
 `},
-      { id:"train", label:"Model Fine-Tuning", filename:"train_ranchhand.py", lang:"python", code:
+      {id:"train", label:"Model Fine-Tuning", filename:"train_ranchhand.py", lang:"python", code:
 `#!/usr/bin/env python3
 """
 train_ranchhand.py
@@ -588,13 +549,13 @@ Requirements:
 from roboflow import Roboflow
 from ultralytics import YOLO
 
-# ── Step 1: Download dataset from Roboflow Universe ──────────────────────────
-# Search roboflow.com/universe for: "cattle detection", "coyote detection"
+# ── Step 1: Download dataset ───────────────────────────────────────────────
+# Search roboflow.com/universe for "cattle detection" or "coyote detection"
 rf      = Roboflow(api_key="YOUR_ROBOFLOW_API_KEY")
 project = rf.workspace("livestock-ai").project("cattle-detection")
 dataset = project.version(3).download("yolov8")
 
-# ── Step 2: Fine-tune from YOLOv8m pretrained weights ───────────────────────
+# ── Step 2: Fine-tune YOLOv8m ─────────────────────────────────────────────
 model   = YOLO("yolov8m.pt")
 
 results = model.train(
@@ -605,142 +566,131 @@ results = model.train(
     name    = "ranchhand_v1",
     patience= 20,
     augment = True,
-    degrees = 15.0,   # Rotation aug for varied pasture angles
+    degrees = 15.0,
     fliplr  = 0.5,
     mosaic  = 1.0,
-    device  = 0,      # GPU 0
+    device  = 0,
 )
 print("Best weights:", results.save_dir)
 
-# ── Step 3: Validate ─────────────────────────────────────────────────────────
+# ── Step 3: Validate ──────────────────────────────────────────────────────
 metrics = model.val()
 print(f"mAP50:    {metrics.box.map50:.3f}")
 print(f"mAP50-95: {metrics.box.map:.3f}")
 
-# ── Step 4: Export to TensorRT on the Jetson ────────────────────────────────
-# Run this ON the Jetson for a device-specific engine:
-#
+# ── Step 4: Export to TensorRT (run ON the Jetson) ────────────────────────
 # model = YOLO("runs/detect/ranchhand_v1/weights/best.pt")
 # model.export(format="engine", half=True, device=0)
-# model = YOLO("best.engine")   # Load the TRT engine
+# model = YOLO("best.engine")
 
-# ── Target classes (define in your dataset's data.yaml) ─────────────────────
+# ── Target classes (data.yaml) ────────────────────────────────────────────
 # names:
-#   0: cow_healthy
-#   1: cow_down
-#   2: cow_limping
-#   3: coyote
-#   4: dog_unknown
-#   5: fence_breach
-#   6: cattle_group
+#   0: cow_healthy    3: coyote
+#   1: cow_down       4: dog_unknown
+#   2: cow_limping    5: fence_breach
+#                     6: cattle_group
 #
-# Aim for 300+ labeled images per class minimum.
-# Use Roboflow's annotation tool for fast labeling.
+# Aim for 300+ labeled images per class.
 `},
     ];
 
-    function hl(code, lang) {
-      let out = code
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;");
-      if (lang==="bash") {
-        out = out
-          .replace(/(#[^\n]*)/g,`<span style="color:${C.muted}">$1</span>`)
-          .replace(/("([^"\\]|\\.)*")/g,`<span style="color:${C.amber}">$1</span>`)
-          .replace(/\b(sudo|systemctl|tee|journalctl|bash|echo)\b/g,`<span style="color:${C.blue}">$1</span>`);
+    function hl(code, lang){
+      let o=code.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+      if(lang==="bash"){
+        o=o
+          .replace(/(#[^\n]*)/g,`<span style="color:#6a9955">$1</span>`)
+          .replace(/("([^"\\]|\\.)*")/g,`<span style="color:#ce9178">$1</span>`)
+          .replace(/\b(sudo|systemctl|tee|journalctl)\b/g,`<span style="color:#569cd6">$1</span>`);
       } else {
-        out = out
-          .replace(/(#[^\n]*)/g,`<span style="color:${C.muted};font-style:italic">$1</span>`)
-          .replace(/("""[\s\S]*?""")/g,`<span style="color:${C.muted};font-style:italic">$1</span>`)
-          .replace(/\b(import|from|def|class|if|else|elif|while|for|return|True|False|None|in|not|and|or|with|as|try|except|raise|pass|break|continue|lambda|yield|async|await)\b/g,
-            `<span style="color:${C.purple}">$1</span>`)
-          .replace(/("([^"\\]|\\.)*"|'([^'\\]|\\.)*')/g,`<span style="color:${C.amber}">$1</span>`)
-          .replace(/\b(\d+\.?\d*)\b/g,`<span style="color:${C.red}">$1</span>`);
+        o=o
+          .replace(/(#[^\n]*)/g,`<span style="color:#6a9955;font-style:italic">$1</span>`)
+          .replace(/("""[\s\S]*?""")/g,`<span style="color:#6a9955;font-style:italic">$1</span>`)
+          .replace(/\b(import|from|def|class|if|else|elif|while|for|return|True|False|None|in|not|and|or|with|as|try|except|raise|pass|break|continue)\b/g,
+            `<span style="color:#569cd6">$1</span>`)
+          .replace(/("([^"\\]|\\.)*"|'([^'\\]|\\.)*')/g,`<span style="color:#ce9178">$1</span>`)
+          .replace(/\b(\d+\.?\d*)\b/g,`<span style="color:#b5cea8">$1</span>`);
       }
-      return out;
+      return o;
     }
 
-    const CARDS = [
-      { label:"AI Inference",   items:["Jetson Orin NX 16GB"],               color:C.green  },
-      { label:"Orchestration",  items:["Raspberry Pi 5 8GB"],                 color:C.green  },
-      { label:"Vision",         items:["4x 4K PoE Cameras","PoE Switch"],     color:C.blue   },
-      { label:"Power",          items:["100W Solar","100Ah LiFePO4","MPPT + Buck Conv."], color:C.amber  },
-      { label:"Connectivity",   items:["SIM7600G LTE HAT","Twilio SMS"],      color:C.purple },
-      { label:"Sensors",        items:["BME280 Temp/Humidity","PIR Motion x2"], color:C.red  },
+    const CARDS=[
+      {label:"AI Inference",  items:["Jetson Orin NX 16GB"],                           color:C.emerald},
+      {label:"Orchestration", items:["Raspberry Pi 5 8GB"],                             color:C.emerald},
+      {label:"Vision",        items:["4x 4K PoE Cameras","8-Port PoE Switch"],          color:C.blue},
+      {label:"Power",         items:["100W Solar Panel","100Ah LiFePO4","MPPT + DC-DC"],color:C.amber},
+      {label:"Connectivity",  items:["SIM7600G LTE HAT","Twilio SMS"],                  color:C.violet},
+      {label:"Sensors",       items:["BME280 Temp/Humidity","PIR Motion ×2"],           color:C.rose},
     ];
 
-    function App() {
-      const [tab,     setTab]     = useState("diagram");
-      const [codeTab, setCodeTab] = useState("jetson");
-      const [copied,  setCopied]  = useState(false);
-
-      const cf = FILES.find(f => f.id === codeTab);
-
-      function copy() {
+    function App(){
+      const [tab,setTab]=useState("diagram");
+      const [codeTab,setCodeTab]=useState("jetson");
+      const [copied,setCopied]=useState(false);
+      const cf=FILES.find(f=>f.id===codeTab);
+      function copy(){
         navigator.clipboard.writeText(cf.code);
-        setCopied(true);
-        setTimeout(()=>setCopied(false), 1800);
+        setCopied(true); setTimeout(()=>setCopied(false),1800);
       }
-
-      return (
-        <div style={{background:C.bg, minHeight:"100vh", color:C.text, paddingBottom:48}}>
+      return(
+        <div style={{background:C.bg,minHeight:"100vh",paddingBottom:56}}>
 
           {/* Header */}
           <div style={{
-            borderBottom:`1px solid ${C.border}`, padding:"16px 28px",
-            display:"flex", alignItems:"center", gap:14,
-            position:"sticky", top:0, background:C.bg, zIndex:10,
+            background:C.headerBg, borderBottom:`1px solid ${C.border}`,
+            padding:"14px 24px", display:"flex", alignItems:"center", gap:14,
+            position:"sticky", top:0, zIndex:10,
           }}>
             <div style={{
-              width:34, height:34, borderRadius:7, background:C.green,
-              display:"flex", alignItems:"center", justifyContent:"center", fontSize:18,
+              width:32,height:32,borderRadius:8,
+              background:"#2a2a2a",border:`1px solid ${C.border}`,
+              display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,
             }}>🐄</div>
             <div>
-              <div style={{fontWeight:700, fontSize:13, color:C.white, letterSpacing:"0.06em"}}>
-                RANCHHAND AI
+              <div style={{fontWeight:700,fontSize:13,color:C.text,letterSpacing:"0.03em"}}>
+                RanchHand AI
               </div>
-              <div style={{fontSize:9.5, color:C.muted}}>System Architecture &amp; Starter Code</div>
+              <div style={{fontSize:11,color:C.muted}}>System Architecture &amp; Starter Code</div>
             </div>
-            <div style={{marginLeft:"auto", display:"flex", gap:6}}>
-              {[{id:"diagram",label:"Diagram"},{id:"code",label:"Code"}].map(t => (
+            <div style={{marginLeft:"auto",display:"flex",gap:6}}>
+              {[{id:"diagram",label:"Diagram"},{id:"code",label:"Code"}].map(t=>(
                 <button key={t.id} className={`tab-btn${tab===t.id?" active":""}`}
                   onClick={()=>setTab(t.id)}>{t.label}</button>
               ))}
             </div>
           </div>
 
-          {/* Diagram tab */}
-          {tab==="diagram" && (
-            <div style={{padding:"22px 20px 0"}}>
-              <div style={{fontSize:9.5, color:C.muted, marginBottom:10}}>
-                Hover any node to highlight its connections
-              </div>
+          {/* Diagram */}
+          {tab==="diagram"&&(
+            <div style={{padding:"20px 24px 0"}}>
+              <p style={{fontSize:12,color:C.muted,marginBottom:14}}>
+                Hover any node to highlight its connections.
+              </p>
               <div style={{
-                border:`1px solid ${C.border}`, borderRadius:8,
-                background:C.panel, overflow:"hidden",
+                border:`1px solid ${C.border}`,borderRadius:10,
+                background:C.panel,overflow:"hidden",
               }}>
                 <Diagram/>
               </div>
-
-              {/* Component cards */}
               <div style={{
                 display:"grid",
-                gridTemplateColumns:"repeat(auto-fill, minmax(190px, 1fr))",
-                gap:8, marginTop:14,
+                gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))",
+                gap:10,marginTop:16,
               }}>
-                {CARDS.map(g => (
+                {CARDS.map(g=>(
                   <div key={g.label} style={{
-                    border:`1px solid ${C.border}`, borderRadius:6,
-                    padding:"10px 12px", background:C.panel,
+                    border:`1px solid ${C.border}`,borderRadius:8,
+                    padding:"12px 14px",background:C.panel,
                   }}>
                     <div style={{
-                      fontSize:9, fontWeight:700, color:g.color,
-                      letterSpacing:"0.07em", marginBottom:6,
+                      fontSize:10,fontWeight:700,color:g.color,
+                      letterSpacing:"0.06em",textTransform:"uppercase",marginBottom:8,
                     }}>{g.label}</div>
-                    {g.items.map(it => (
-                      <div key={it} style={{fontSize:9, color:C.muted, lineHeight:1.8}}>
-                        · {it}
+                    {g.items.map(it=>(
+                      <div key={it} style={{
+                        fontSize:11.5,color:C.textMd,lineHeight:1.9,
+                        display:"flex",alignItems:"center",gap:7,
+                      }}>
+                        <span style={{color:g.color,fontSize:7}}>●</span>{it}
                       </div>
                     ))}
                   </div>
@@ -749,42 +699,37 @@ print(f"mAP50-95: {metrics.box.map:.3f}")
             </div>
           )}
 
-          {/* Code tab */}
-          {tab==="code" && (
-            <div style={{padding:"20px 20px 0"}}>
-              <div style={{display:"flex", gap:4, marginBottom:10, flexWrap:"wrap", alignItems:"center"}}>
-                {FILES.map(f => (
-                  <button key={f.id}
-                    className={`code-tab-btn${codeTab===f.id?" active":""}`}
+          {/* Code */}
+          {tab==="code"&&(
+            <div style={{padding:"20px 24px 0"}}>
+              <div style={{display:"flex",gap:6,marginBottom:12,flexWrap:"wrap",alignItems:"center"}}>
+                {FILES.map(f=>(
+                  <button key={f.id} className={`code-tab-btn${codeTab===f.id?" active":""}`}
                     onClick={()=>setCodeTab(f.id)}>{f.label}</button>
                 ))}
                 <button className={`copy-btn${copied?" copied":""}`} onClick={copy}>
                   {copied?"✓ Copied":"Copy"}
                 </button>
               </div>
-
-              <div style={{
-                border:`1px solid ${C.border}`, borderRadius:8,
-                background:C.codeBg, overflow:"hidden",
-              }}>
-                {/* Fake titlebar */}
+              <div style={{border:`1px solid ${C.border}`,borderRadius:10,background:C.codeBg,overflow:"hidden"}}>
                 <div style={{
-                  padding:"8px 14px", borderBottom:`1px solid ${C.border}`,
-                  display:"flex", alignItems:"center", gap:7,
+                  padding:"10px 16px",borderBottom:`1px solid ${C.border}`,
+                  display:"flex",alignItems:"center",gap:7,background:"#1a1a1a",
                 }}>
-                  {[C.red, C.amber, C.green].map(c => (
-                    <div key={c} style={{width:9,height:9,borderRadius:"50%",background:c}}/>
+                  {["#f87171","#fbbf24","#34d399"].map(col=>(
+                    <div key={col} style={{width:10,height:10,borderRadius:"50%",background:col,opacity:0.7}}/>
                   ))}
-                  <span style={{fontSize:9, color:C.muted, marginLeft:6}}>{cf.filename}</span>
+                  <span style={{fontSize:11,color:C.muted,marginLeft:8,fontFamily:"'JetBrains Mono',monospace"}}>
+                    {cf.filename}
+                  </span>
                 </div>
-                <pre dangerouslySetInnerHTML={{__html: hl(cf.code, cf.lang)}}/>
+                <pre dangerouslySetInnerHTML={{__html:hl(cf.code,cf.lang)}}/>
               </div>
-
-              <div style={{marginTop:8, fontSize:9, color:C.muted}}>
-                {cf.id==="jetson"  && "Run on Jetson Orin NX · Requires JetPack 6 + ultralytics"}
-                {cf.id==="rpi"     && "Run on Raspberry Pi 5 · pip install twilio flask smbus2 RPi.GPIO bme280"}
-                {cf.id==="systemd" && "Run once per board to configure auto-start on boot + static IPs"}
-                {cf.id==="train"   && "Run on GPU workstation or Google Colab · copy best.pt to Jetson after training"}
+              <div style={{marginTop:10,fontSize:11,color:C.muted}}>
+                {cf.id==="jetson"  &&"▸ Run on Jetson Orin NX · Requires JetPack 6 + pip install ultralytics opencv-python-headless"}
+                {cf.id==="rpi"     &&"▸ Run on Raspberry Pi 5 · pip install twilio flask smbus2 RPi.GPIO bme280"}
+                {cf.id==="systemd" &&"▸ Run once per board · configures auto-start on boot and static IP addressing"}
+                {cf.id==="train"   &&"▸ Run on GPU workstation or Google Colab · copy best.pt to /opt/ranchhand/ on the Jetson after training"}
               </div>
             </div>
           )}
